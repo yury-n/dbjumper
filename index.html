@@ -3,10 +3,28 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>DB Explorer</title>
+    <title>dbjumper</title>
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-<div id="root"></div>
-<script src="/dist/bundle.js"></script>
+    <div class="sidebar">
+        <div class="sidebar__header">dbjumper</div>
+        <div class="sidebar__content">
+            <ul class="table-list">
+                <li class="table-list__table">accounting</li>
+                <li class="table-list__table">examples</li>
+                <li class="table-list__table">orders</li>
+                <li class="table-list__table">summaries</li>
+                <li class="table-list__table">users</li>
+                <li class="table-list__table">users_items</li>
+            </ul>
+        </div>
+    </div>
+    <div class="board">
+        <div class="board-item">
+            <input type="text" class="query-input" />
+        </div>
+    </div>
+    <script src="./dist/bundle.js"></script>
 </body>
 </html>
