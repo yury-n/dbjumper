@@ -8,11 +8,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://yury-n@bitbucket.org/yury-n/dbexplorer.git"
+    "url": "git+https://github.com/yury-n/dbjumper.git"
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/yury-n/dbexplorer#readme",
+  "homepage": "https://github.com/yury-n/dbjumper",
   "dependencies": {
     "babel-polyfill": "^6.9.1",
     "lodash": "^4.13.1",
