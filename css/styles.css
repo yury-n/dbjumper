@@ -53,20 +53,57 @@ body, html {
 }
 
 .board-item {
-    height: 80px;
     border-bottom: 1px #e0dfda solid;
-    padding: 15px;
-    box-sizing: border-box;
+    padding: 15px 25px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .query-input {
     width: 100%;
     border: 1px #e8e7e3 solid;
-    font-size: 20px;
+    font-size: 22px;
+    font-weight:bold;
     box-sizing: border-box;
     height: 50px;
     line-height: 50px;
     padding-left: 10px;
-    border-radius: 5px;
     outline: none;
+    background: rgba(255,255,255,0.6);
+}
+
+.query-input--active {
+    background: white;
+}
+
+/*
+
+highlighted tds/columns
+background-color: #bcf8dd;
+background-color: #afeefe;
+background-color: #ffb291;
+background-color: #ffefbf;
+background: #d5e5a3;
+
+*/
+
+.results-table {
+    margin: 15px 0 10px 0;
+    font-size: 15px;
+    background: white;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+    padding: 11px 14px;
+    text-align: left;
+    border-right: 1px solid #edebe8;
+    border-left: 1px solid #edebe8;
+    border-bottom: 1px solid #edebe8;
+}
+
+.results-table tbody > tr:nth-of-type(2n+1) {
+    background: #f9f8f6;
 }
