@@ -1,0 +1,26 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100%;
+    background-color: #66615b;
+}
+
+.sidebar__header {
+    display: block;
+    color: #ff7845;
+    padding-left: 20px;
+    font-size: 25px;
+    line-height: 80px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 2px;
+    background: rgba(255, 255, 255, 0.03);
+    text-decoration: none;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+.sidebar__content {
+    padding: 20px 0 0 10px;
+}

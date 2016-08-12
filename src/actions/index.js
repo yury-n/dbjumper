@@ -1,3 +1,4 @@
+import { v4 } from 'node-uuid';
 import * as api from '../api';
 
 export const fetchTableList = () => (dispatch) => {
@@ -14,3 +15,9 @@ export const fetchTableList = () => (dispatch) => {
         }
     );
 };
+
+export const addBoardItem = (query = '') => ({
+    type: 'ADD_BOARD_ITEM',
+    id: v4(),
+    query
+});

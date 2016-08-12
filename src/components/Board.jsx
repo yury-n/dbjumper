@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import BoardItem from './BoardItem';
+import { connect } from 'react-redux';
+import { getBoard } from '../reducers/';
+import { getBoardItems } from '../reducers/board';
 
-const Board = () => (
+const Board = ({ boardItems }) => (
     <div className="board">
-        <div className="board-item">
-            <input type="text" className="query-input query-input--active" autoFocus autoComplete="false" spellCheck="false" />
-        </div>
+        {boardItems.map(boardItem => (<BoardItem key={boardItem.id} />))}
     </div>
 );
+Board.propTypes = {
+    boardItems: PropTypes.array.isRequired
+};
 
-export default Board;
+const mapStateToProps = (state) => ({
+    boardItems: getBoardItems(getBoard(state))
+});
+
+export default connect(mapStateToProps)(Board);

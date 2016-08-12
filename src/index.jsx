@@ -1,4 +1,4 @@
-import 'styles/main.css'
+import 'styles/main.css';
 
 import 'babel-polyfill';
 import React from 'react';
@@ -10,6 +10,7 @@ import * as actions from './actions';
 const store = configureStore();
 
 store.dispatch(actions.fetchTableList());
+store.dispatch(actions.addBoardItem());
 
 render(
     <Root store={store} />,
