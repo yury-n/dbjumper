@@ -4,12 +4,13 @@ import boardItem from './boardItem';
 const boardItems = (state = [], action) => {
     switch (action.type) {
         case 'ADD_BOARD_ITEM':
+            if (action.clearBoard) {
+                return [boardItem(undefined, action)];
+            }
             return [
                 ...state,
                 boardItem(undefined, action)
             ];
-        case 'CLEAR_BOARD':
-            return [];
         default:
             return state;
     }
@@ -22,3 +23,4 @@ const board = combineReducers({
 export default board;
 
 export const getBoardItems = (state) => state.boardItems;
+export const getBoardItem = (state, id) => state.boardItems.find(item => item.id === id);

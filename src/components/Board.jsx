@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import BoardItem from './BoardItem';
+import AddBoardItemButton from './AddBoardItemButton';
 import { connect } from 'react-redux';
 import { getBoard } from '../reducers/';
 import { getBoardItems } from '../reducers/board';
 
 const Board = ({ boardItems }) => (
     <div className="board">
-        {boardItems.map(boardItem => (<BoardItem key={boardItem.id} />))}
+        {boardItems.map(({id}) => (<BoardItem id={id} key={id} />))}
+        <AddBoardItemButton />
     </div>
 );
 Board.propTypes = {

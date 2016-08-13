@@ -16,8 +16,15 @@ export const fetchTableList = () => (dispatch) => {
     );
 };
 
-export const addBoardItem = (query = '') => ({
+export const addBoardItem = (query = '', clearBoard = false) => ({
     type: 'ADD_BOARD_ITEM',
     id: v4(),
-    query
+    query,
+    clearBoard
 });
+
+export const selectTableFromSidebar = (tablename) => {
+    const query = tablename;
+    const clearBoard = true;
+    return addBoardItem(query, clearBoard);
+};

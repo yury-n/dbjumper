@@ -1,17 +1,21 @@
 import 'styles/sidebar.css';
-
+import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
+import TableList from './TableList';
+import { selectTableFromSidebar } from '../actions';
 
-const Sidebar = ({ children }) => (
+const Sidebar = ({ selectTableFromSidebar }) => (
     <div className="sidebar">
         <a href="/" className="sidebar__header">dbjumper</a>
         <div className="sidebar__content">
-            {children}
+            <TableList onTableSelect={selectTableFromSidebar} />
         </div>
     </div>
 );
 Sidebar.propTypes = {
-    children: PropTypes.node.isRequired
+    selectTableFromSidebar: PropTypes.func.isRequired
 };
 
-export default Sidebar;
+const mapStateToProps = (state) => ({});
+
+export default connect(mapStateToProps, {selectTableFromSidebar})(Sidebar);

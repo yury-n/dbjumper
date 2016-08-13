@@ -29,6 +29,10 @@ body, html {
     padding-left: 260px;
 }
 
+.add-board-item-button {
+    fill: #bbb;
+}
+
 .board-item {
     border-bottom: 1px #e7e6e2 solid;
     padding: 15px 25px;
