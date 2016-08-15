@@ -28,6 +28,12 @@ export const removeBoardItem = (id) => ({
     id
 });
 
+export const changeQueryInput = (boardItemId, query) => ({
+    type: 'CHANGE_QUERY_INPUT',
+    boardItemId,
+    query
+});
+
 export const selectTableFromSidebar = (tablename) => {
     const query = tablename;
     const clearBoard = true;

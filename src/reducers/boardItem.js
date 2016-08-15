@@ -5,6 +5,11 @@ const boardItem = (state = {}, action) => {
                 id: action.id,
                 query: action.query
             };
+        case 'CHANGE_QUERY_INPUT':
+            return {
+                ...state,
+                query: action.query
+            };
         default:
             return state;
     }
