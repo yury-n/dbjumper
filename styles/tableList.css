@@ -1,0 +1,17 @@
+.table-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+.table-list__table {
+    padding: 10px 10px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+}
+
+.table-list__table:hover {
+    color: white;
+}

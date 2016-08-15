@@ -8,5 +8,7 @@ export const fetchTableList = () =>
             {'tablename': 'users'},
             {'tablename': 'orders'},
             {'tablename': 'cart_items'},
+            {'tablename': 'cart_shipping'},
+            {'tablename': 'cart_orders'},
         ];
     });

@@ -1,6 +1,8 @@
+import 'styles/board.css';
 import React, { PropTypes } from 'react';
 import BoardItem from './BoardItem';
 import AddButton from './buttons/AddButton';
+import SuggestionList from './SuggestionList';
 import { addBoardItem } from '../actions';
 import { connect } from 'react-redux';
 import { getBoard } from '../reducers/';
@@ -11,6 +13,7 @@ const Board = ({ boardItems, addBoardItem }) => (
         {boardItems.map(({id}) => (
             <BoardItem id={id} key={id} />
         ))}
+        <SuggestionList />
         <AddButton onClickHandler={addBoardItem} />
     </div>
 );
