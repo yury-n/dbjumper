@@ -29,15 +29,42 @@ body, html {
     padding-left: 260px;
 }
 
-.add-board-item-button {
-    fill: #bbb;
+.board .add-button {
+    width: 45px;
+    height: 45px;
+    fill: #c5c5c5;
+    margin: 25px;
+    cursor: pointer;
+    border: 1px solid #d7d7d5;
+    border-radius: 33px;
+    padding: 2px;
+}
+
+.board .add-button:hover {
+    fill: #aba9a9;
+    border-color: #b9b9b9;
 }
 
 .board-item {
-    border-bottom: 1px #e7e6e2 solid;
-    padding: 15px 25px;
     display: flex;
     flex-wrap: wrap;
+    position: relative;
+    border-bottom: 1px #e7e6e2 solid;
+    padding: 15px 25px;
+}
+
+.board-item .close-button {
+    width: 40px;
+    height: 40px;
+    fill: #d0d0cf;
+    cursor: pointer;
+    position: absolute;
+    right: 30px;
+    top: 19px;
+}
+
+.board-item .close-button:hover {
+    fill: #aba9a9;
 }
 
 .query-input {

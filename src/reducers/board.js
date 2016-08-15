@@ -11,6 +11,12 @@ const boardItems = (state = [], action) => {
                 ...state,
                 boardItem(undefined, action)
             ];
+        case 'REMOVE_BOARD_ITEM':
+            const removeIndex = state.findIndex(item => item.id === action.id);
+            return [
+                ...state.slice(0, removeIndex),
+                ...state.slice(removeIndex + 1, state.length)
+            ];
         default:
             return state;
     }

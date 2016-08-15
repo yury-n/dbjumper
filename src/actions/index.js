@@ -23,6 +23,11 @@ export const addBoardItem = (query = '', clearBoard = false) => ({
     clearBoard
 });
 
+export const removeBoardItem = (id) => ({
+    type: 'REMOVE_BOARD_ITEM',
+    id
+});
+
 export const selectTableFromSidebar = (tablename) => {
     const query = tablename;
     const clearBoard = true;
