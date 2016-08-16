@@ -8,7 +8,7 @@ import * as actions from './actions';
 
 const store = configureStore();
 
-store.dispatch(actions.fetchTableList());
+store.dispatch(actions.fetchTableListing());
 store.dispatch(actions.addBoardItem());
 
 render(

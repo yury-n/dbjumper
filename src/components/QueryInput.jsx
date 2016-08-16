@@ -19,8 +19,9 @@ class QueryInput extends Component {
         const { onChangeHandler } = this.props;
         const inputValue = event.target.value;
         const inputBoundingRect = event.target.getBoundingClientRect();
+        const cursorPosition = event.target.selectionStart;
 
-        onChangeHandler({inputValue, inputBoundingRect});
+        onChangeHandler({inputValue, inputBoundingRect, cursorPosition});
     }
 
     render() {

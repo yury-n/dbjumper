@@ -1,12 +1,12 @@
 import { v4 } from 'node-uuid';
 import * as api from '../api';
 
-export const fetchTableList = () => (dispatch) => {
+export const fetchTableListing = () => (dispatch) => {
 
-    return api.fetchTableList().then(
+    return api.fetchTableListing().then(
         response => {
             dispatch({
-                type: 'FETCH_TABLE_LIST_SUCCESS',
+                type: 'FETCH_TABLE_LISTING_SUCCESS',
                 response
             });
         },
@@ -34,11 +34,12 @@ export const removeBoardItem = (id) => ({
     id
 });
 
-export const changeQueryInput = (boardItemId, query, inputBoundingRect) => ({
+export const changeQueryInput = (boardItemId, query, inputBoundingRect, cursorPosition) => ({
     type: 'CHANGE_QUERY_INPUT',
     boardItemId,
     query,
-    inputBoundingRect
+    inputBoundingRect,
+    cursorPosition
 });
 
 export const focusQueryInput = (boardItemId) => ({

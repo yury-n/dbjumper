@@ -17,7 +17,7 @@ class BoardItem extends Component {
         } = this.props;
         return (
             <div className="board-item">
-                <QueryInput onChangeHandler={({inputValue, inputBoundingRect}) => changeQueryInput(id, inputValue, inputBoundingRect)}
+                <QueryInput onChangeHandler={({inputValue, inputBoundingRect, cursorPosition}) => changeQueryInput(id, inputValue, inputBoundingRect, cursorPosition)}
                             onFocusHandler={() => focusQueryInput(id)}
                             active={active}
                             query={query} />

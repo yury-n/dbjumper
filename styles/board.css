@@ -11,12 +11,14 @@
     fill: #c5c5c5;
     margin: 25px;
     cursor: pointer;
-    border: 1px solid #d7d7d5;
+    border: 1px solid #e8e7e3;
+    background: rgba(255, 255, 255, 0.75);
     border-radius: 33px;
     padding: 2px;
 }
 
 .board .add-button:hover {
     fill: #aba9a9;
-    border-color: #b9b9b9;
+    border-color: #dededd;
+    background: white;
 }

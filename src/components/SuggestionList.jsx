@@ -80,7 +80,7 @@ class SuggestionList extends Component {
 }
 SuggestionList.propTypes = {
     visible: PropTypes.bool.isRequired,
-    suggestions: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    suggestions: PropTypes.arrayOf(PropTypes.string).isRequired,
     selectedIndex: PropTypes.number.isRequired,
     position: PropTypes.shape({
         top: PropTypes.number.isRequired,
