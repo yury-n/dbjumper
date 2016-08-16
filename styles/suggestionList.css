@@ -7,11 +7,13 @@
     line-height: 50px;
     background: white;
     border: 1px #e8e7e3 solid;
+    border-top: none;
     box-shadow: 0 5px 8px -8px #000;
     position: absolute;
     top: 64px;
     left: 285px;
     display: inline-block;
+    cursor: pointer;
 }
 
 .suggestion-list li {

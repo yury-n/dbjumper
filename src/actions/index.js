@@ -23,19 +23,39 @@ export const addBoardItem = (query = '', clearBoard = false) => ({
     clearBoard
 });
 
-export const removeBoardItem = (id) => ({
-    type: 'REMOVE_BOARD_ITEM',
-    id
-});
-
-export const changeQueryInput = (boardItemId, query) => ({
-    type: 'CHANGE_QUERY_INPUT',
-    boardItemId,
-    query
-});
-
 export const selectTableFromSidebar = (tablename) => {
     const query = tablename;
     const clearBoard = true;
     return addBoardItem(query, clearBoard);
 };
+
+export const removeBoardItem = (id) => ({
+    type: 'REMOVE_BOARD_ITEM',
+    id
+});
+
+export const changeQueryInput = (boardItemId, query, inputBoundingRect) => ({
+    type: 'CHANGE_QUERY_INPUT',
+    boardItemId,
+    query,
+    inputBoundingRect
+});
+
+export const focusQueryInput = (boardItemId) => ({
+    type: 'FOCUS_QUERY_INPUT',
+    boardItemId
+});
+
+export const changeSelectedSuggestion = (selectedIndex) => ({
+    type: 'CHANGE_SELECTED_SUGGESTION',
+    selectedIndex
+});
+
+export const hideSuggestions = () => ({
+    type: 'HIDE_SUGGESTIONS'
+});
+
+export const useSuggestion = (suggestion) => ({
+    type: 'USE_SUGGESTION',
+    suggestion
+});

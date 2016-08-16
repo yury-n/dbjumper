@@ -3,7 +3,8 @@ const boardItem = (state = {}, action) => {
         case 'ADD_BOARD_ITEM':
             return {
                 id: action.id,
-                query: action.query
+                query: action.query,
+                active: true
             };
         case 'CHANGE_QUERY_INPUT':
             return {

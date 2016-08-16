@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux';
 import boardItem from './boardItem';
 
 const boardItems = (state = [], action) => {
@@ -23,19 +22,51 @@ const boardItems = (state = [], action) => {
             ];
         case 'CHANGE_QUERY_INPUT':
             boardItemIndex = findBoardItemIndex(action.boardItemId);
-            let nextState = [...state];
-            nextState[boardItemIndex] = boardItem(state[boardItemIndex], action);
-            return nextState;
+            let newState = [...state];
+            newState[boardItemIndex] = boardItem(state[boardItemIndex], action);
+            return newState;
         default:
             return state;
     }
 };
 
-const board = combineReducers({
-    boardItems
-});
+const activeBoardItemId = (state = -1, action) => {
+
+    switch (action.type) {
+        case 'ADD_BOARD_ITEM':
+            return action.id;
+        case 'FOCUS_QUERY_INPUT':
+            return action.boardItemId;
+        case 'BLUR_QUERY_INPUT':
+            return -1;
+        default:
+            return state;
+    }
+};
+
+const board = (state = {}, action) => {
+
+    let newState = {
+        boardItems: boardItems(state.boardItems, action),
+        activeBoardItemId: activeBoardItemId(state.activeBoardItemId, action)
+    };
+    switch (action.type) {
+        case 'USE_SUGGESTION':
+            newState.boardItems = newState.boardItems.map(item => {
+                if (item.id == newState.activeBoardItemId) {
+                    item.query = action.suggestion;
+                    item.active = true;
+                }
+                return item;
+            });
+            return newState;
+        default:
+            return newState;
+    }
+};
 
 export default board;
 
 export const getBoardItems = (state) => state.boardItems;
 export const getBoardItem = (state, id) => state.boardItems.find(item => item.id === id);
+export const getActiveBoardItemId = (state) => state.activeBoardItemId;
