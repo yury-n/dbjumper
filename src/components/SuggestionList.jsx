@@ -28,7 +28,7 @@ class SuggestionList extends Component {
 
     handleKeydown(event) {
         const {
-            suggestions, selectedIndex,
+            suggestions, selectedIndex, forQueryPart,
             changeSelectedSuggestion, hideSuggestions, useSuggestion
         } = this.props;
 
@@ -41,10 +41,10 @@ class SuggestionList extends Component {
             changeSelectedSuggestion(selectedIndex + 1);
             event.preventDefault();
         } else if (event.keyCode == '13') { // enter
-            useSuggestion(selectedSuggestion);
+            useSuggestion(selectedSuggestion, forQueryPart);
             event.preventDefault();
         } else if (event.keyCode == '9') { // tab
-            useSuggestion(selectedSuggestion);
+            useSuggestion(selectedSuggestion, forQueryPart);
             event.preventDefault();
         } else if (event.keyCode == '27') { // esc
             hideSuggestions();
@@ -53,7 +53,7 @@ class SuggestionList extends Component {
 
     render() {
         const {
-            visible, suggestions, selectedIndex, position,
+            visible, suggestions, selectedIndex, componentPosition, forQueryPart,
             changeSelectedSuggestion, useSuggestion
         } = this.props;
 
@@ -61,8 +61,8 @@ class SuggestionList extends Component {
             return null;
         }
         const ulStyle = {
-            'left': position.left + 'px',
-            'top': position.top + 'px'
+            'left': componentPosition.left + 'px',
+            'top': componentPosition.top + 'px'
         };
         return (
             <ul className="suggestion-list" style={ulStyle}>
@@ -70,7 +70,7 @@ class SuggestionList extends Component {
                     <li key={index}
                         className={index == selectedIndex ? 'active' : ''}
                         onMouseOver={() => {changeSelectedSuggestion(index)}}
-                        onClick={(e) => {e.stopPropagation();useSuggestion(suggestion);}}>
+                        onClick={(e) => {e.stopPropagation();useSuggestion(suggestion, forQueryPart);}}>
                         {suggestion}
                     </li>
                 ))}
@@ -82,10 +82,11 @@ SuggestionList.propTypes = {
     visible: PropTypes.bool.isRequired,
     suggestions: PropTypes.arrayOf(PropTypes.string).isRequired,
     selectedIndex: PropTypes.number.isRequired,
-    position: PropTypes.shape({
+    componentPosition: PropTypes.shape({
         top: PropTypes.number.isRequired,
         left: PropTypes.number.isRequired
     }).isRequired,
+    forQueryPart: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
     changeSelectedSuggestion: PropTypes.func.isRequired,
     hideSuggestions: PropTypes.func.isRequired
 };

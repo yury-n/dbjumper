@@ -8,6 +8,7 @@ body, html {
 .query-input {
     width: 100%;
     border: 1px #e8e7e3 solid;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 22px;
     font-weight:bold;
     box-sizing: border-box;
@@ -15,7 +16,7 @@ body, html {
     line-height: 50px;
     padding-left: 12px;
     outline: none;
-    background: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.5);
 }
 
 .query-input--active {
@@ -36,7 +37,7 @@ background: #d5e5a3;
 .results-table {
     margin: 15px 0 10px 0;
     font-size: 15px;
-    background: white;
+    background: rgba(255, 255, 255, 0.9);
     border-spacing: 0;
     border-collapse: collapse;
 }

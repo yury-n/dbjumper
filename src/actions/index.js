@@ -56,7 +56,8 @@ export const hideSuggestions = () => ({
     type: 'HIDE_SUGGESTIONS'
 });
 
-export const useSuggestion = (suggestion) => ({
+export const useSuggestion = (suggestion, forQueryPart) => ({
     type: 'USE_SUGGESTION',
-    suggestion
+    suggestion,
+    forQueryPart
 });

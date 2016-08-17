@@ -53,8 +53,12 @@ const board = (state = {}, action) => {
     switch (action.type) {
         case 'USE_SUGGESTION':
             newState.boardItems = newState.boardItems.map(item => {
+                const { suggestion, forQueryPart } = action;
+                const [ forQueryPartStart, forQueryPartEnd ] = forQueryPart;
                 if (item.id == newState.activeBoardItemId) {
-                    item.query = action.suggestion;
+                    item.query = item.query.slice(0, forQueryPartStart) +
+                                 suggestion +
+                                 item.query.slice(forQueryPartEnd, item.query.length);
                     item.active = true;
                 }
                 return item;
