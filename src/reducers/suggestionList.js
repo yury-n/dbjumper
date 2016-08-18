@@ -59,15 +59,6 @@ const _findNearestSeparator = (query, offset, direction) => {
     return {separator: nearestSeparator, offset: nearestSeparatorOffset};
 };
 
-const _ifNotOneExactMatchToInput = (input, matches) => {
-    if (matches.length == 1 && input == matches[0]) {
-        // there is no reason to suggest something that's already been fully inputted
-        return [];
-    } else {
-        return matches;
-    }
-};
-
 const suggestionsSourceReducer = (state = [], action) => {
     switch (action.type) {
         case 'FETCH_TABLE_LISTING_SUCCESS':
@@ -77,7 +68,21 @@ const suggestionsSourceReducer = (state = [], action) => {
     }
 };
 
-const suggestionsReducer = (suggestionsState = [], suggestionSourceState = [], action) => {
+const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': 0}, suggestionSourceState = [], action) => {
+
+    const _emptyState = () => {
+        return {'items': [], 'separatorIndex': 0};
+    };
+
+    const _ifNotOneExactMatchToInput = (input, suggestionsState) => {
+        if (suggestionsState.items.length == 1 && input == suggestionsState.items[0]) {
+            // there is no reason to suggest something that's already been fully inputted
+            return [];
+        } else {
+            return suggestionsState;
+        }
+    };
+
     switch (action.type) {
         case 'CHANGE_QUERY_INPUT':
 
@@ -86,26 +91,25 @@ const suggestionsReducer = (suggestionsState = [], suggestionSourceState = [], a
             const separatorLeft = _findNearestSeparator(query, cursorPosition, 'left');
             const separatorRight = _findNearestSeparator(query, cursorPosition, 'right');
 
-            console.log('separatorLeft', separatorLeft);
-            console.log('separatorRight', separatorRight);
-
             // sanity check
             if (separatorLeft.separator == ';'
                 && (query.indexOf('.') == -1 || query.indexOf('.') > separatorLeft.offset)) {
                 // incorrect query -- you can use ';' to add filtering by another column
                 // after one filter has been applied with "table.column=value" syntax
-                return [];
+                return _emptyState();
             }
 
             if (separatorLeft.separator === null) {
 
                 const inputtedTableName = query.slice(0, separatorRight.offset || query.length);
                 if (!inputtedTableName.length) {
-                    return [];
+                    return _emptyState();
                 }
-                const matchedItems = suggestionSourceState.filter(sourceItem => sourceItem.tablename.indexOf(query) === 0);
-                const matchedTableNames = matchedItems.map(item => item.tablename);
-                return _ifNotOneExactMatchToInput(inputtedTableName, matchedTableNames);
+                const matchedTableNames = Object.keys(suggestionSourceState).filter(tablename => tablename.indexOf(query) === 0);
+                return _ifNotOneExactMatchToInput(
+                    inputtedTableName,
+                    {items: matchedTableNames, separatorIndex: 0}
+                );
 
             } else if (separatorLeft.separator == '.' || separatorLeft.separator == ';') {
 
@@ -114,22 +118,44 @@ const suggestionsReducer = (suggestionsState = [], suggestionSourceState = [], a
                 console.log('inputtedColumnName', inputtedColumnName);
 
                 const inputtedTable = query.split('.')[0];
-                const inputtedTableSourceItem = suggestionSourceState.find(
-                    sourceItem => sourceItem.tablename == inputtedTable
-                );
-                const inputtedTableColumns = inputtedTableSourceItem ? inputtedTableSourceItem.columnames : [];
-
-                if (inputtedColumnName.length) {
-                    const matchedColumnNames = inputtedTableColumns.filter(
-                        columnname => columnname.indexOf(inputtedColumnName) === 0
-                    );
-                    return _ifNotOneExactMatchToInput(inputtedColumnName, matchedColumnNames);
-                } else {
-                    return inputtedTableColumns;
+                const suggestionSourceForInputtedTable = suggestionSourceState[inputtedTable];
+                if (typeof suggestionSourceForInputtedTable == 'undefined') {
+                    return _emptyState();
                 }
 
+                console.log('suggestionSourceForInputtedTable', suggestionSourceForInputtedTable);
+
+                let matchedColumnNames = [];
+                let separatorIndex = 0;
+                ['indexed', 'nonindexed'].forEach(columnType => {
+
+                    if (!suggestionSourceForInputtedTable[columnType + '_columns'].length) {
+                        return;
+                    }
+
+                    matchedColumnNames = [
+                        ...matchedColumnNames,
+                        ...suggestionSourceForInputtedTable[columnType + '_columns'].filter(
+                            columnname => columnname.indexOf(inputtedColumnName) === 0
+                        )
+                    ];
+                    if (columnType == 'indexed' && matchedColumnNames.length) {
+                        // separator between indexed and non-indexed columns
+                        separatorIndex = (matchedColumnNames.length - 1);
+                    }
+                });
+                if (matchedColumnNames[matchedColumnNames.length - 1] == separatorIndex) {
+                    // this would be the case, if all matches are indexed columns
+                    // no need to have a separator
+                    separatorIndex = 0;
+                }
+                return _ifNotOneExactMatchToInput(
+                    inputtedColumnName,
+                    {items: matchedColumnNames, separatorIndex}
+                );
+
             } else {
-                return [];
+                return _emptyState();
             }
 
         default:

@@ -1,7 +1,7 @@
 const tableList = (state = [], action) => {
 
     if (action.type == 'FETCH_TABLE_LISTING_SUCCESS') {
-        return action.response.map(row => row.tablename);
+        return Object.keys(action.response).sort();
     }
 
     return state;

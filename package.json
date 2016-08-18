@@ -16,6 +16,8 @@
   "homepage": "https://github.com/yury-n/dbjumper",
   "dependencies": {
     "babel-polyfill": "^6.9.1",
+    "classnames": "^2.2.5",
+    "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.13.1",
     "node-uuid": "^1.4.7",
     "react": "^15.2.0",

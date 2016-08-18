@@ -1,6 +1,7 @@
 import 'styles/suggestionList.css';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 import { getSuggestionList } from '../reducers/';
 import { changeSelectedSuggestion, hideSuggestions, useSuggestion } from '../actions';
 
@@ -32,7 +33,7 @@ class SuggestionList extends Component {
             changeSelectedSuggestion, hideSuggestions, useSuggestion
         } = this.props;
 
-        const selectedSuggestion = suggestions[selectedIndex];
+        const selectedSuggestion = suggestions.items[selectedIndex];
 
         if (event.keyCode == '38') { // up
             changeSelectedSuggestion(selectedIndex - 1);
@@ -64,11 +65,17 @@ class SuggestionList extends Component {
             'left': componentPosition.left + 'px',
             'top': componentPosition.top + 'px'
         };
+
+        const { items: suggestionItems, separatorIndex } = suggestions;
+
         return (
             <ul className="suggestion-list" style={ulStyle}>
-                {suggestions.map((suggestion, index) => (
+                {suggestionItems.map((suggestion, index) => (
                     <li key={index}
-                        className={index == selectedIndex ? 'active' : ''}
+                        className={classnames({
+                            'active': index == selectedIndex,
+                            'with-separator': index == separatorIndex
+                        })}
                         onMouseOver={() => {changeSelectedSuggestion(index)}}
                         onClick={(e) => {e.stopPropagation();useSuggestion(suggestion, forQueryPart);}}>
                         {suggestion}
@@ -80,7 +87,10 @@ class SuggestionList extends Component {
 }
 SuggestionList.propTypes = {
     visible: PropTypes.bool.isRequired,
-    suggestions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    suggestions: PropTypes.shape({
+        items: PropTypes.arrayOf(PropTypes.string).isRequired,
+        separatorIndex: PropTypes.number.isRequired
+    }),
     selectedIndex: PropTypes.number.isRequired,
     componentPosition: PropTypes.shape({
         top: PropTypes.number.isRequired,

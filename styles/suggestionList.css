@@ -23,3 +23,7 @@
 .suggestion-list li.active {
     background-color: #DCEFFF;
 }
+
+.suggestion-list li.with-separator {
+    border-bottom: 1px solid #ecebe8;
+}
