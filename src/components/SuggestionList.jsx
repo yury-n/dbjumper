@@ -21,7 +21,12 @@ class SuggestionList extends Component {
     }
 
     handleClickWindow() {
-        const { hideSuggestions } = this.props;
+        const { visible, suggestions, hideSuggestions } = this.props;
+
+        if (!visible || !suggestions.items.length) {
+            return;
+        }
+
         // clicks on suggestions stop event bubbling
         // thus, if we catch a window click, it is always outside of the suggestion list
         hideSuggestions();
@@ -32,6 +37,10 @@ class SuggestionList extends Component {
             suggestions, selectedIndex, forQueryPart,
             changeSelectedSuggestion, hideSuggestions, useSuggestion
         } = this.props;
+
+        if (!suggestions.items.length) {
+            return;
+        }
 
         const selectedSuggestion = suggestions.items[selectedIndex];
 
@@ -73,7 +82,7 @@ class SuggestionList extends Component {
                 {suggestionItems.map((suggestion, index) => (
                     <li key={index}
                         className={classnames({
-                            'active': index == selectedIndex,
+                            "active": index == selectedIndex,
                             'with-separator': index == separatorIndex
                         })}
                         onMouseOver={() => {changeSelectedSuggestion(index)}}

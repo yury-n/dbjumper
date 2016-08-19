@@ -1,0 +1,24 @@
+.results-table {
+    margin: 15px 0 10px 0;
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+    padding: 11px 14px;
+    text-align: left;
+    border-right: 1px solid #edebe8;
+    border-left: 1px solid #edebe8;
+    border-bottom: 1px solid #edebe8;
+    white-space: nowrap;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.results-table tbody > tr:nth-of-type(2n+1) {
+    background: #f9f8f6;
+}

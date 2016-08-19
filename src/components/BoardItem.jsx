@@ -3,25 +3,28 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import QueryInput from './QueryInput';
 import CloseButton from './buttons/CloseButton';
-import { removeBoardItem, changeQueryInput, focusQueryInput } from '../actions';
+import ResultsTable from './ResultsTable';
+import { removeBoardItem, changeQueryInput, focusQueryInput, commitQueryInput } from '../actions';
 import { getBoard } from '../reducers/';
-import { getBoardItem, getActiveBoardItemId } from '../reducers/board';
+import { getBoardItem, getActiveQueryBoardItemId } from '../reducers/board';
 
 class BoardItem extends Component {
 
     render() {
         const {
-            id, query, active,
-            removeBoardItem,
-            changeQueryInput, focusQueryInput
+            id, query, isQueryActive, results,
+            removeBoardItem, changeQueryInput, focusQueryInput, commitQueryInput
         } = this.props;
+
         return (
             <div className="board-item">
                 <QueryInput onChangeHandler={({inputValue, inputBoundingRect, cursorPosition}) => changeQueryInput(id, inputValue, inputBoundingRect, cursorPosition)}
-                            onFocusHandler={() => focusQueryInput(id)}
-                            active={active}
+                            onClickHandler={() => {if (!isQueryActive) focusQueryInput(id)}}
+                            onCommitHandler={(query) => commitQueryInput(id, query)}
+                            active={isQueryActive}
                             query={query} />
                 <CloseButton onClickHandler={() => { removeBoardItem(id) }} />
+                <ResultsTable results={results} />
             </div>
         );
     }
@@ -29,18 +32,20 @@ class BoardItem extends Component {
 BoardItem.propTypes = {
     id: PropTypes.string.isRequired,
     query: PropTypes.string.isRequired,
-    active: PropTypes.bool.isRequired,
+    isQueryActive: PropTypes.bool.isRequired,
+    results: PropTypes.array.isRequired,
     removeBoardItem: PropTypes.func.isRequired,
     changeQueryInput: PropTypes.func.isRequired,
-    focusQueryInput: PropTypes.func.isRequired
+    focusQueryInput: PropTypes.func.isRequired,
+    commitQueryInput: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, params) => {
     const board = getBoard(state);
-    const activeBoardItemId = getActiveBoardItemId(board);
+    const activeQueryBoardItemId = getActiveQueryBoardItemId(board);
     return {
         ...getBoardItem(board, params.id),
-        active: (activeBoardItemId === params.id)
+        isQueryActive: (activeQueryBoardItemId === params.id)
     };
 };
 
@@ -49,6 +54,7 @@ export default connect(
     {
         removeBoardItem,
         changeQueryInput,
-        focusQueryInput
+        focusQueryInput,
+        commitQueryInput
     }
 )(BoardItem);

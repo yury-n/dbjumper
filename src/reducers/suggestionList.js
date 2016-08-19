@@ -61,29 +61,33 @@ const _findNearestSeparator = (query, offset, direction) => {
 
 const suggestionsSourceReducer = (state = [], action) => {
     switch (action.type) {
-        case 'FETCH_TABLE_LISTING_SUCCESS':
+        case 'FETCH_TABLES_LISTING_SUCCESS':
             return action.response;
         default:
             return state;
     }
 };
 
-const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': 0}, suggestionSourceState = [], action) => {
+const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -1}, suggestionSourceState = [], action) => {
 
     const _emptyState = () => {
-        return {'items': [], 'separatorIndex': 0};
+        return {'items': [], 'separatorIndex': -1};
     };
 
     const _ifNotOneExactMatchToInput = (input, suggestionsState) => {
         if (suggestionsState.items.length == 1 && input == suggestionsState.items[0]) {
             // there is no reason to suggest something that's already been fully inputted
-            return [];
+            return _emptyState();
         } else {
             return suggestionsState;
         }
     };
 
     switch (action.type) {
+        case 'HIDE_SUGGESTIONS':
+        case 'USE_SUGGESTION':
+            return _emptyState();
+
         case 'CHANGE_QUERY_INPUT':
 
             const {query, cursorPosition} = action;
@@ -108,14 +112,12 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': 0
                 const matchedTableNames = Object.keys(suggestionSourceState).filter(tablename => tablename.indexOf(query) === 0);
                 return _ifNotOneExactMatchToInput(
                     inputtedTableName,
-                    {items: matchedTableNames, separatorIndex: 0}
+                    {items: matchedTableNames, separatorIndex: -1}
                 );
 
             } else if (separatorLeft.separator == '.' || separatorLeft.separator == ';') {
 
                 const inputtedColumnName = query.slice(separatorLeft.offset + 1, separatorRight.offset || query.length);
-
-                console.log('inputtedColumnName', inputtedColumnName);
 
                 const inputtedTable = query.split('.')[0];
                 const suggestionSourceForInputtedTable = suggestionSourceState[inputtedTable];
@@ -123,10 +125,8 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': 0
                     return _emptyState();
                 }
 
-                console.log('suggestionSourceForInputtedTable', suggestionSourceForInputtedTable);
-
                 let matchedColumnNames = [];
-                let separatorIndex = 0;
+                let separatorIndex = -1;
                 ['indexed', 'nonindexed'].forEach(columnType => {
 
                     if (!suggestionSourceForInputtedTable[columnType + '_columns'].length) {
@@ -147,7 +147,7 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': 0
                 if (matchedColumnNames[matchedColumnNames.length - 1] == separatorIndex) {
                     // this would be the case, if all matches are indexed columns
                     // no need to have a separator
-                    separatorIndex = 0;
+                    separatorIndex = -1;
                 }
                 return _ifNotOneExactMatchToInput(
                     inputtedColumnName,
@@ -233,10 +233,10 @@ const suggestionListReducer = (state = {}, action) => {
             break;
         case 'CHANGE_SELECTED_SUGGESTION':
             selectedIndex = action.selectedIndex;
-            if (selectedIndex > suggestions.length - 1) {
+            if (selectedIndex > suggestions.items.length - 1) {
                 selectedIndex = 0;
             } else if (selectedIndex < 0) {
-                selectedIndex = suggestions.length - 1;
+                selectedIndex = suggestions.items.length - 1;
             }
             break;
     }
@@ -252,3 +252,5 @@ const suggestionListReducer = (state = {}, action) => {
 };
 
 export default suggestionListReducer;
+
+export const getSuggestedItems = (state) => state.suggestions.items;

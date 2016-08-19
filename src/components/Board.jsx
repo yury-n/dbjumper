@@ -6,15 +6,15 @@ import SuggestionList from './SuggestionList';
 import { addBoardItem } from '../actions';
 import { connect } from 'react-redux';
 import { getBoard } from '../reducers/';
-import { getBoardItems } from '../reducers/board';
+import { getBoardItems, isAddButtonVisible } from '../reducers/board';
 
-const Board = ({ boardItems, addBoardItem }) => (
+const Board = ({ boardItems, addButtonIsVisible, addBoardItem }) => (
     <div className="board">
         {boardItems.map(({id}) => (
             <BoardItem id={id} key={id} />
         ))}
         <SuggestionList />
-        <AddButton onClickHandler={addBoardItem} />
+        {addButtonIsVisible ? <AddButton onClickHandler={addBoardItem} /> : null}
     </div>
 );
 Board.propTypes = {
@@ -23,7 +23,8 @@ Board.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    boardItems: getBoardItems(getBoard(state))
+    boardItems: getBoardItems(getBoard(state)),
+    addButtonIsVisible: isAddButtonVisible(getBoard(state))
 });
 
 export default connect(mapStateToProps, {addBoardItem})(Board);

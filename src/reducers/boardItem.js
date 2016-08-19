@@ -4,12 +4,17 @@ const boardItem = (state = {}, action) => {
             return {
                 id: action.id,
                 query: action.query,
-                active: true
+                results: []
             };
         case 'CHANGE_QUERY_INPUT':
             return {
                 ...state,
                 query: action.query
+            };
+        case 'FETCH_TABLE_DATA_SUCCESS':
+            return {
+                ...state,
+                results: action.response
             };
         default:
             return state;

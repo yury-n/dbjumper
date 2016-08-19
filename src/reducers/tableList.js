@@ -1,6 +1,6 @@
 const tableList = (state = [], action) => {
 
-    if (action.type == 'FETCH_TABLE_LISTING_SUCCESS') {
+    if (action.type == 'FETCH_TABLES_LISTING_SUCCESS') {
         return Object.keys(action.response).sort();
     }
 

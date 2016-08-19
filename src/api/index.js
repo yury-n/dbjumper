@@ -15,12 +15,17 @@ export const fetchTableListingFake = () =>
         ];
     });
 
-export const fetchTableListing = () => {
+export const fetchTablesListing = () => {
 
-    return fetch('http://gifster.local/dbapi/get_table_listing.php').then(r => r.json());
+    return fetch('http://gifster.local/dbjumper/get_tables_listing.php').then(r => r.json());
 
 };
 
-export const fetchTable = (table) => {
+export const fetchTableMeta = (table) => {
 
+};
+
+export const fetchTableData = (query) => {
+
+    return fetch('http://gifster.local/dbjumper/get_table_data.php?query=' + query).then(r => r.json());
 };

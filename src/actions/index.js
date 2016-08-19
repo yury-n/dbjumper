@@ -1,32 +1,54 @@
 import { v4 } from 'node-uuid';
 import * as api from '../api';
 
-export const fetchTableListing = () => (dispatch) => {
+export const fetchTablesListing = () => (dispatch) => {
 
-    return api.fetchTableListing().then(
+    return api.fetchTablesListing().then(
         response => {
             dispatch({
-                type: 'FETCH_TABLE_LISTING_SUCCESS',
+                type: 'FETCH_TABLES_LISTING_SUCCESS',
                 response
             });
-        },
-        error => {
-            /* do nothing for now */
         }
     );
 };
 
-export const addBoardItem = (query = '', clearBoard = false) => ({
+export const commitQueryInput = (boardItemId, query) => (dispatch) => {
+    dispatch({type: 'COMMIT_QUERY_INPUT'});
+    return fetchTableData(boardItemId, query)(dispatch);
+};
+
+export const fetchTableData = (boardItemId, table) => (dispatch) => {
+
+    return api.fetchTableData(table).then(
+        response => {
+            dispatch({
+                type: 'FETCH_TABLE_DATA_SUCCESS',
+                boardItemId,
+                response
+            });
+        }
+    );
+};
+
+export const addBoardItem = (...args) => addBoardItemWithId(v4(), ...args);
+
+export const addBoardItemWithId = (id, query = '', clearBoard = false, activate = true) => ({
     type: 'ADD_BOARD_ITEM',
-    id: v4(),
+    id,
     query,
+    activate,
     clearBoard
 });
 
-export const selectTableFromSidebar = (tablename) => {
+export const selectTableFromSidebar = (tablename) => (dispatch) => {
+    const boardItemId = v4();
     const query = tablename;
     const clearBoard = true;
-    return addBoardItem(query, clearBoard);
+    const activate = false;
+    dispatch(addBoardItemWithId(boardItemId, query, clearBoard, activate));
+
+    return fetchTableData(boardItemId, query)(dispatch);
 };
 
 export const removeBoardItem = (id) => ({
