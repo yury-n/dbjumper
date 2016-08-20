@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { isQueryInputCommittable } from '../reducers';
+import { doesQueryInputHaveSuggestions } from '../reducers';
 
 class QueryInput extends Component {
 
@@ -30,9 +30,12 @@ class QueryInput extends Component {
     }
 
     handleKeydown(event) {
-        const { queryInputIsCommittable, onCommitHandler } = this.props;
+        const { hasSuggestions, onCommitHandler } = this.props;
 
-        if (event.keyCode == '13' && queryInputIsCommittable) { // enter
+        // a query is committed with Enter
+        // when there're suggestions hitting Enter should use a suggestion instead of
+        // committing the query
+        if (event.keyCode == '13' && !hasSuggestions) {
             const inputValue = event.target.value;
             onCommitHandler(inputValue);
         }
@@ -65,14 +68,14 @@ class QueryInput extends Component {
 QueryInput.propTypes = {
     active: PropTypes.bool.isRequired,
     query: PropTypes.string.isRequired,
-    queryInputIsCommittable: PropTypes.bool.isRequired,
+    hasSuggestions: PropTypes.bool.isRequired,
     onChangeHandler: PropTypes.func.isRequired,
     onClickHandler: PropTypes.func.isRequired,
     onCommitHandler: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
-    queryInputIsCommittable: isQueryInputCommittable(state)
+    hasSuggestions: doesQueryInputHaveSuggestions(state)
 });
 
 export default connect(mapStateToProps)(QueryInput);
