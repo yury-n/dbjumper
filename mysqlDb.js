@@ -64,12 +64,12 @@ export const getTableData = (query, done) => {
 
     con.query('SHOW TABLES', (err, rows) => {
 
-        const existing_tables = rows.map(row => {
+        const existingTables = rows.map(row => {
             let key = Object.keys(row)[0];
             return row[key];
         });
 
-        if (!existing_tables.includes(requestedTable)) {
+        if (!existingTables.includes(requestedTable)) {
             throw('Invalid table name.');
         }
 
@@ -96,10 +96,38 @@ export const getTableData = (query, done) => {
                     AND TABLE_SCHEMA = "${DATABASE}"
             `, (err, rows) => {
 
-                dbQuery += ' LIMIT 100';
-            });
+                const existingColumns = rows.map(row => row['COLUMN_NAME']);
 
-            // todo
+                const filteringPairs = filtering.split(';');
+
+                let queryArgs = [];
+
+                filteringPairs.forEach(filteringPair => {
+                    let [ key, value ] = filteringPair.split('=');
+                    if (!existingColumns.includes(key)) {
+                        throw('Invalid column name.');
+                    }
+                    if (typeof value == 'undefined') {
+                        throw('Invalid query. Missing filter value.');
+                    }
+                    if (value.indexOf(',') === -1) {
+                        dbQuery += `AND ${key} = ? `;
+                        queryArgs.push(value);
+                    } else {
+                        let values = value.split(',');
+                        let qMarks = '?,'.repeat(values.length - 1) + '?';
+                        dbQuery += `AND ${key} IN (${qMarks}) `;
+                        queryArgs = [...queryArgs, ...values];
+                    }
+                });
+
+                dbQuery += ' LIMIT 100';
+
+                con.query(dbQuery, queryArgs, (err, rows) => {
+                    con.end();
+                    done(rows);
+                });
+            });
         }
     });
 };

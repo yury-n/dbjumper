@@ -5,24 +5,6 @@ body, html {
     background-color: #f4f3ef;
 }
 
-.query-input {
-    width: 100%;
-    border: 1px #e8e7e3 solid;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 22px;
-    font-weight:bold;
-    box-sizing: border-box;
-    height: 50px;
-    line-height: 50px;
-    padding-left: 12px;
-    outline: none;
-    background: rgba(255,255,255,0.5);
-}
-
-.query-input--active {
-    background: white;
-}
-
 /*
 
 highlighted tds/columns
