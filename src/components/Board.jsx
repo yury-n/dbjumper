@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import BoardItem from './BoardItem';
 import AddButton from './buttons/AddButton';
 import SuggestionList from './SuggestionList';
+import FloatingQueryInput from './FloatingQueryInput';
 import { addBoardItem } from '../actions';
 import { connect } from 'react-redux';
 import { getBoard, doesQueryInputHaveSuggestions } from '../reducers/';
@@ -41,6 +42,7 @@ class Board extends Component{
                     <BoardItem id={id} key={id} />
                 ))}
                 <SuggestionList />
+                <FloatingQueryInput />
                 {addButtonIsVisible ? <AddButton onClickHandler={addBoardItem} /> : null}
             </div>
         );

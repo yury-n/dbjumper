@@ -2,3 +2,7 @@
     position: absolute;
     width: 300px;
 }
+
+.floating-query-input .query-input {
+    box-shadow: 0 5px 8px -8px #000;
+}

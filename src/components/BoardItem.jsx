@@ -24,7 +24,7 @@ class BoardItem extends Component {
                             active={isQueryActive}
                             query={query} />
                 <CloseButton onClickHandler={() => { removeBoardItem(id) }} />
-                <ResultsTable results={results} />
+                <ResultsTable rows={results} />
             </div>
         );
     }

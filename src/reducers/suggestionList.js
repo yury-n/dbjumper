@@ -61,7 +61,7 @@ const _findNearestSeparator = (query, offset, direction) => {
 
 const suggestionsSourceReducer = (state = [], action) => {
     switch (action.type) {
-        case 'FETCH_TABLES_LISTING_SUCCESS':
+        case 'TABLES_LISTING_FETCH_COMPLETED':
             return action.response;
         default:
             return state;
@@ -84,11 +84,11 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
     };
 
     switch (action.type) {
-        case 'HIDE_SUGGESTIONS':
-        case 'USE_SUGGESTION':
+        case 'SUGGESTIONS_HIDE':
+        case 'SUGGESTIONS_USE':
             return _emptyState();
 
-        case 'CHANGE_QUERY_INPUT':
+        case 'QUERY_INPUT_CHANGE':
 
             const {query, cursorPosition} = action;
 
@@ -166,7 +166,7 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
 const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
 
     switch (action.type) {
-        case 'CHANGE_QUERY_INPUT':
+        case 'QUERY_INPUT_CHANGE':
             const { query, cursorPosition, inputBoundingRect } = action;
 
             // if needed, shift suggestions block N px from left to place it next to
@@ -194,7 +194,7 @@ const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
 // the part we'll replace with our suggestion, if selected
 const forQueryPartReducer = (state = [0, 0], action) => {
     switch (action.type) {
-        case 'CHANGE_QUERY_INPUT':
+        case 'QUERY_INPUT_CHANGE':
             const { query, cursorPosition } = action;
             const separatorLeft = _findNearestSeparator(query, cursorPosition, 'left');
             const separatorRight = _findNearestSeparator(query, cursorPosition, 'right');
@@ -218,7 +218,7 @@ const suggestionListReducer = (state = {}, action) => {
     let selectedIndex = state.selectedIndex || 0;
 
     switch (action.type) {
-        case 'CHANGE_QUERY_INPUT':
+        case 'QUERY_INPUT_CHANGE':
             if (action.query.length > 0) {
                 visible = true;
             } else {
@@ -226,12 +226,12 @@ const suggestionListReducer = (state = {}, action) => {
                 selectedIndex = 0;
             }
             break;
-        case 'HIDE_SUGGESTIONS':
-        case 'USE_SUGGESTION':
+        case 'SUGGESTIONS_HIDE':
+        case 'SUGGESTIONS_USE':
             visible = false;
             selectedIndex = 0;
             break;
-        case 'CHANGE_SELECTED_SUGGESTION':
+        case 'SUGGESTIONS_CHANGE_SELECTED':
             selectedIndex = action.selectedIndex;
             if (selectedIndex > suggestions.items.length - 1) {
                 selectedIndex = 0;

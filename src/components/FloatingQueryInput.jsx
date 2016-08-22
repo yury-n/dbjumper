@@ -8,13 +8,18 @@ import { getFloatingQueryInput } from '../reducers';
 class FloatingQueryInput extends Component {
 
     render() {
-        const { position, query } = this.props;
-
+        const { componentPosition, query } = this.props;
 
         const divStyle = {
-            'left': position.left + 'px',
-            'top': position.top + 'px'
+            'left': componentPosition.left + 'px',
+            'top': componentPosition.top + 'px'
         };
+
+        const { visible } = this.props;
+
+        if (!visible) {
+            return null;
+        }
 
         return (
             <div className="floating-query-input" style={divStyle}>
@@ -28,6 +33,14 @@ class FloatingQueryInput extends Component {
         );
     }
 }
+FloatingQueryInput.propTypes = {
+    visible: PropTypes.bool.isRequired,
+    query: PropTypes.string.isRequired,
+    componentPosition: PropTypes.shape({
+        top: PropTypes.number.isRequired,
+        left: PropTypes.number.isRequired
+    }).isRequired
+};
 
 const mapStateToProps = (state) => ({
     ...getFloatingQueryInput(state)

@@ -6,7 +6,7 @@ const boardItems = (state = [], action) => {
     const findBoardItemIndex = (id) => state.findIndex(item => item.id === id);
 
     switch (action.type) {
-        case 'ADD_BOARD_ITEM':
+        case 'BOARD_ADD_ITEM':
             if (action.clearBoard) {
                 return [boardItem(undefined, action)];
             }
@@ -14,14 +14,14 @@ const boardItems = (state = [], action) => {
                 ...state,
                 boardItem(undefined, action)
             ];
-        case 'REMOVE_BOARD_ITEM':
+        case 'BOARD_REMOVE_ITEM':
             boardItemIndex = findBoardItemIndex(action.id);
             return [
                 ...state.slice(0, boardItemIndex),
                 ...state.slice(boardItemIndex + 1, state.length)
             ];
-        case 'CHANGE_QUERY_INPUT':
-        case 'FETCH_TABLE_DATA_SUCCESS':
+        case 'QUERY_INPUT_CHANGE':
+        case 'TABLE_DATA_FETCH_COMPLETED':
             boardItemIndex = findBoardItemIndex(action.boardItemId);
             let newState = [...state];
             newState[boardItemIndex] = boardItem(state[boardItemIndex], action);
@@ -34,12 +34,12 @@ const boardItems = (state = [], action) => {
 const activeBoardItemId = (state = -1, action) => {
 
     switch (action.type) {
-        case 'ADD_BOARD_ITEM':
+        case 'BOARD_ADD_ITEM':
             return (action.activate ? action.id : -1);
-        case 'FOCUS_QUERY_INPUT':
-        case 'CHANGE_QUERY_INPUT':
+        case 'QUERY_INPUT_FOCUS':
+        case 'QUERY_INPUT_CHANGE':
             return action.boardItemId;
-        case 'COMMIT_QUERY_INPUT':
+        case 'QUERY_INPUT_COMMIT':
             return -1;
         default:
             return state;
@@ -48,8 +48,8 @@ const activeBoardItemId = (state = -1, action) => {
 
 const addButtonIsVisible = (state = false, action) => {
     switch (action.type) {
-        case 'REMOVE_BOARD_ITEM':
-        case 'FETCH_TABLE_DATA_SUCCESS':
+        case 'BOARD_REMOVE_ITEM':
+        case 'TABLE_DATA_FETCH_COMPLETED':
             return true;
         default:
             return state;
@@ -64,7 +64,7 @@ const board = (state = {}, action) => {
         addButtonIsVisible: addButtonIsVisible(state.addButtonIsVisible, action)
     };
     switch (action.type) {
-        case 'USE_SUGGESTION':
+        case 'SUGGESTIONS_USE':
             newState.boardItems = newState.boardItems.map(item => {
                 const { suggestion, forQueryPart } = action;
                 const [ forQueryPartStart, forQueryPartEnd ] = forQueryPart;

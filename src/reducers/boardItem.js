@@ -1,17 +1,17 @@
 const boardItem = (state = {}, action) => {
     switch (action.type) {
-        case 'ADD_BOARD_ITEM':
+        case 'BOARD_ADD_ITEM':
             return {
                 id: action.id,
                 query: action.query,
                 results: []
             };
-        case 'CHANGE_QUERY_INPUT':
+        case 'QUERY_INPUT_CHANGE':
             return {
                 ...state,
                 query: action.query
             };
-        case 'FETCH_TABLE_DATA_SUCCESS':
+        case 'TABLE_DATA_FETCH_COMPLETED':
             return {
                 ...state,
                 results: action.response

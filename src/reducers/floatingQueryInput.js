@@ -1,9 +1,17 @@
-const floatingQueryInput = (state = {}, action) => {
+const floatingQueryInput = (state, action) => {
 
-    return {
-        'position': {top: 0, left: 0},
-        'query': ''
-    };
+    if (typeof state == 'undefined') {
+        state = {
+            'visible': false,
+            'query': '',
+            'componentPosition': {top: 0, left: 0}
+        };
+    }
+
+    switch (action.type) {
+        default:
+            return state;
+    }
 };
 
 export default floatingQueryInput;

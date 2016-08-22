@@ -1,36 +1,60 @@
 import 'styles/resultsTable.css';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-const ResultsTable = ({ results }) => {
+class ResultsTable extends Component {
 
-    if (!results.length) {
-        return null;
+    constructor(props) {
+        super(props);
+
+        this.handleTDClick = this.handleTDClick.bind(this);
+        this.handleTHClick = this.handleTHClick.bind(this);
     }
-    const columnNames = Object.keys(results[0]);
 
-    const ths = columnNames.map((columnName, index) => (<th key={index}>{columnName}</th>));
+    handleTDClick(event) {
+        const { rows } = this.props;
+    }
 
-    const trs = [];
-    results.forEach((row, rowIndex) => {
-        let tds = [];
-        columnNames.forEach((columnName, columnIndex) => {
-            tds.push(<td key={columnIndex}>{row[columnName]}</td>);
+    handleTHClick() {
+
+    }
+
+    render() {
+        const { rows } = this.props;
+
+        if (!rows.length) {
+            return null;
+        }
+        const columnNames = Object.keys(rows[0]);
+
+        const ths = columnNames.map(
+            (columnName, index) => (<th onClick={this.handleTHClick} key={index}>{columnName}</th>)
+        );
+
+        const trs = [];
+        rows.forEach((row, rowIndex) => {
+            let tds = [];
+            columnNames.forEach((columnName, columnIndex) => {
+                tds.push(<td onClick={this.handleTDClick} key={columnIndex}>{row[columnName]}</td>);
+            });
+            trs.push(<tr key={rowIndex}>{tds}</tr>);
         });
-        trs.push(<tr key={rowIndex}>{tds}</tr>);
-    });
 
-    return (
-        <table className="results-table">
-            <thead>
-                <tr>
-                    {ths}
-                </tr>
-            </thead>
-            <tbody>
-                {trs}
-            </tbody>
-        </table>
-    );
+        return (
+            <table className="results-table">
+                <thead>
+                    <tr>
+                        {ths}
+                    </tr>
+                </thead>
+                <tbody>
+                    {trs}
+                </tbody>
+            </table>
+        );
+    }
+}
+ResultsTable.propTypes = {
+    rows: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default ResultsTable;
