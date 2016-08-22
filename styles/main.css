@@ -5,13 +5,12 @@ body, html {
     background-color: #f4f3ef;
 }
 
-/*
-
-highlighted tds/columns
-background-color: #bcf8dd;
-background-color: #afeefe;
-background-color: #ffb291;
-background-color: #ffefbf;
-background: #d5e5a3;
-
-*/
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}

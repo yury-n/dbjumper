@@ -30,7 +30,7 @@
 
 .sidebar__content {
     padding: 20px 0 20px 10px;
-    overflow: scroll;
+    overflow: auto;
     position: absolute;
     height: calc(100vh - 80px);
     width: 100%;

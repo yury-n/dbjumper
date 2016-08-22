@@ -1,18 +1,20 @@
 import { v4 } from 'node-uuid';
 import * as api from '../api';
 
-const BOARD_ADD_ITEM = 'BOARD_ADD_ITEM';
-const BOARD_REMOVE_ITEM = 'BOARD_REMOVE_ITEM';
-const SUGGESTIONS_CHANGE_SELECTED = 'SUGGESTIONS_CHANGE_SELECTED';
-const SUGGESTIONS_HIDE = 'SUGGESTIONS_HIDE';
-const SUGGESTIONS_USE = 'SUGGESTIONS_USE';
-const TABLE_DATA_FETCH = 'TABLE_DATA_FETCH';
-const TABLE_DATA_FETCH_COMPLETED = 'TABLE_DATA_FETCH_COMPLETED';
-const TABLES_LISTING_FETCH = 'TABLES_LISTING_FETCH';
-const TABLES_LISTING_FETCH_COMPLETED = 'TABLES_LISTING_FETCH_COMPLETED';
-const QUERY_INPUT_CHANGE = 'QUERY_INPUT_CHANGE';
-const QUERY_INPUT_COMMIT = 'QUERY_INPUT_COMMIT';
-const QUERY_INPUT_FOCUS = 'QUERY_INPUT_FOCUS';
+export const BOARD_ADD_ITEM = 'BOARD_ADD_ITEM';
+export const BOARD_REMOVE_ITEM = 'BOARD_REMOVE_ITEM';
+export const SUGGESTIONS_CHANGE_SELECTED = 'SUGGESTIONS_CHANGE_SELECTED';
+export const SUGGESTIONS_HIDE = 'SUGGESTIONS_HIDE';
+export const SUGGESTIONS_USE = 'SUGGESTIONS_USE';
+export const TABLE_DATA_FETCH = 'TABLE_DATA_FETCH';
+export const TABLE_DATA_FETCH_COMPLETED = 'TABLE_DATA_FETCH_COMPLETED';
+export const TABLES_LISTING_FETCH = 'TABLES_LISTING_FETCH';
+export const TABLES_LISTING_FETCH_COMPLETED = 'TABLES_LISTING_FETCH_COMPLETED';
+export const QUERY_INPUT_CHANGE = 'QUERY_INPUT_CHANGE';
+export const QUERY_INPUT_COMMIT = 'QUERY_INPUT_COMMIT';
+export const QUERY_INPUT_FOCUS = 'QUERY_INPUT_FOCUS';
+export const CONNECTION_CREATE_FROM = 'CONNECTION_CREATE_FROM';
+export const CONNECTION_CREATE_TO = 'CONNECTION_CREATE_TO';
 
 /*
  BOARD_*
@@ -84,6 +86,25 @@ export const useSuggestion = (suggestion, forQueryPart) => ({
     type: SUGGESTIONS_USE,
     suggestion,
     forQueryPart
+});
+
+/*
+ CONNECTION_*
+ */
+
+const connectionColors = ['#bcf8dd', '#afeefe', '#ffb291', '#ffefbf', '#d5e5a3'];
+let   colorPointer = 0;
+const _getNextConnectionColor = () => {
+    return connectionColors[colorPointer++];
+};
+
+export const createConnectionFrom = (boardItemId, { rowIndex, columnIndex, boundingRect }) => ({
+    type: CONNECTION_CREATE_FROM,
+    color: _getNextConnectionColor(),
+    boardItemId,
+    rowIndex,
+    columnIndex,
+    boundingRect
 });
 
 /*

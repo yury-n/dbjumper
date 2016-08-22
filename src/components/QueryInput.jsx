@@ -70,6 +70,7 @@ QueryInput.propTypes = {
     active: PropTypes.bool.isRequired,
     query: PropTypes.string.isRequired,
     hasSuggestions: PropTypes.bool.isRequired,
+
     onChangeHandler: PropTypes.func.isRequired,
     onClickHandler: PropTypes.func.isRequired,
     onCommitHandler: PropTypes.func.isRequired

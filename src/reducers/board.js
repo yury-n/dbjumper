@@ -1,45 +1,27 @@
+import {
+    BOARD_ADD_ITEM,
+    BOARD_REMOVE_ITEM,
+    CONNECTION_CREATE_FROM,
+    QUERY_INPUT_CHANGE,
+    QUERY_INPUT_FOCUS,
+    QUERY_INPUT_COMMIT,
+    SUGGESTIONS_USE,
+    TABLE_DATA_FETCH_COMPLETED
+} from '../actions';
+
 import boardItem from './boardItem';
-
-const boardItems = (state = [], action) => {
-
-    let boardItemIndex;
-    const findBoardItemIndex = (id) => state.findIndex(item => item.id === id);
-
-    switch (action.type) {
-        case 'BOARD_ADD_ITEM':
-            if (action.clearBoard) {
-                return [boardItem(undefined, action)];
-            }
-            return [
-                ...state,
-                boardItem(undefined, action)
-            ];
-        case 'BOARD_REMOVE_ITEM':
-            boardItemIndex = findBoardItemIndex(action.id);
-            return [
-                ...state.slice(0, boardItemIndex),
-                ...state.slice(boardItemIndex + 1, state.length)
-            ];
-        case 'QUERY_INPUT_CHANGE':
-        case 'TABLE_DATA_FETCH_COMPLETED':
-            boardItemIndex = findBoardItemIndex(action.boardItemId);
-            let newState = [...state];
-            newState[boardItemIndex] = boardItem(state[boardItemIndex], action);
-            return newState;
-        default:
-            return state;
-    }
-};
+import boardItems from './boardItems';
 
 const activeBoardItemId = (state = -1, action) => {
 
     switch (action.type) {
-        case 'BOARD_ADD_ITEM':
+        case BOARD_ADD_ITEM:
             return (action.activate ? action.id : -1);
-        case 'QUERY_INPUT_FOCUS':
-        case 'QUERY_INPUT_CHANGE':
+        case QUERY_INPUT_FOCUS:
+        case QUERY_INPUT_CHANGE:
             return action.boardItemId;
-        case 'QUERY_INPUT_COMMIT':
+        case QUERY_INPUT_COMMIT:
+        case CONNECTION_CREATE_FROM:
             return -1;
         default:
             return state;
@@ -48,8 +30,8 @@ const activeBoardItemId = (state = -1, action) => {
 
 const addButtonIsVisible = (state = false, action) => {
     switch (action.type) {
-        case 'BOARD_REMOVE_ITEM':
-        case 'TABLE_DATA_FETCH_COMPLETED':
+        case BOARD_REMOVE_ITEM:
+        case TABLE_DATA_FETCH_COMPLETED:
             return true;
         default:
             return state;
@@ -58,27 +40,22 @@ const addButtonIsVisible = (state = false, action) => {
 
 const board = (state = {}, action) => {
 
-    let newState = {
+    state = {
         boardItems: boardItems(state.boardItems, action),
         activeQueryBoardItemId: activeBoardItemId(state.activeQueryBoardItemId, action),
         addButtonIsVisible: addButtonIsVisible(state.addButtonIsVisible, action)
     };
     switch (action.type) {
-        case 'SUGGESTIONS_USE':
-            newState.boardItems = newState.boardItems.map(item => {
-                const { suggestion, forQueryPart } = action;
-                const [ forQueryPartStart, forQueryPartEnd ] = forQueryPart;
-                if (item.id == newState.activeQueryBoardItemId) {
-                    item.query = item.query.slice(0, forQueryPartStart) +
-                                 suggestion +
-                                 item.query.slice(forQueryPartEnd, item.query.length);
-                    item.isQueryActive = true;
+        case SUGGESTIONS_USE:
+            state.boardItems = state.boardItems.map(item => {
+                if (item.id == state.activeQueryBoardItemId) {
+                    return boardItem(item, action);
                 }
                 return item;
             });
-            return newState;
+            return state;
         default:
-            return newState;
+            return state;
     }
 };
 
