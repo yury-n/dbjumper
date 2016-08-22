@@ -1,7 +1,7 @@
 .results-table {
     margin: 15px 0 10px 0;
     font-size: 15px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.8);
     border-spacing: 0;
     border-collapse: collapse;
 }
@@ -10,9 +10,7 @@
 .results-table td {
     padding: 11px 14px;
     text-align: left;
-    border-right: 1px solid #edebe8;
-    border-left: 1px solid #edebe8;
-    border-bottom: 1px solid #edebe8;
+    border: 1px solid #e7e6e4;
     white-space: nowrap;
     max-width: 280px;
     overflow: hidden;
@@ -20,5 +18,5 @@
 }
 
 .results-table tbody > tr:nth-of-type(2n+1) {
-    background: #f9f8f6;
+    background: #fbfaf8;
 }

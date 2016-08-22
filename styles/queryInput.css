@@ -1,6 +1,6 @@
 .query-input {
     width: 100%;
-    border: 1px #e8e7e3 solid;
+    border: 1px #e7e6e4 solid;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 22px;
     font-weight:bold;
@@ -9,7 +9,7 @@
     line-height: 50px;
     padding-left: 12px;
     outline: none;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.8);
 }
 
 .query-input--active {

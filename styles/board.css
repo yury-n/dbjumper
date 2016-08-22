@@ -12,7 +12,7 @@
     margin: 25px;
     cursor: pointer;
     border: 1px solid #e8e7e3;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 33px;
     padding: 2px;
 }
@@ -20,5 +20,5 @@
 .board .add-button:hover {
     fill: #aba9a9;
     border-color: #dededd;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
 }

@@ -4,7 +4,7 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import config from './webpack.config.babel';
 import Express from 'express';
 import favicon from 'serve-favicon';
-import * as mysqlDb from './mysqlDb';
+import * as mysqldb from './mysqldb';
 
 const app = new Express();
 const port = 3000;
@@ -23,11 +23,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/get_tables_listing', (req, res) => {
-    mysqlDb.getTablesListing(results => res.json(results));
+    mysqldb.getTablesListing(results => res.json(results));
 });
 
 app.get('/get_table_data', (req, res) => {
-    mysqlDb.getTableData(req.query.query, results => res.json(results));
+    mysqldb.getTableData(req.query.query, results => res.json(results));
 });
 
 app.listen(port, error => {
