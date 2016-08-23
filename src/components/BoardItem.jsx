@@ -25,9 +25,12 @@ class BoardItem extends Component {
 
         return (
             <div className="board-item">
-                <QueryInput onChangeHandler={({inputValue, inputBoundingRect, cursorPosition}) => changeQueryInput(id, inputValue, inputBoundingRect, cursorPosition)}
+                <QueryInput onChangeHandler={
+                                ({inputValue, inputBoundingRect, cursorPosition}) =>
+                                    changeQueryInput(id, inputValue, inputBoundingRect, cursorPosition)
+                            }
                             onClickHandler={() => {if (!isQueryActive) focusQueryInput(id)}}
-                            onCommitHandler={(query) => commitQueryInput(id, query)}
+                            onCommitHandler={() => commitQueryInput(id)}
                             active={isQueryActive}
                             query={query} />
                 <CloseButton onClickHandler={() => removeBoardItem(id)} />
@@ -45,8 +48,8 @@ BoardItem.propTypes = {
     results: PropTypes.array.isRequired,
     connectedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,
-        columnIndex: PropTypes.number,
-        rowIndex: PropTypes.number
+        columnName: PropTypes.string.isRequired,
+        values: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
     })),
 
     removeBoardItem: PropTypes.func.isRequired,
@@ -60,8 +63,6 @@ const mapStateToProps = (state, params) => {
     const activeQueryBoardItemId = getActiveQueryBoardItemId(board);
     const boardItemId = params.id;
     const connections = getConnections(state);
-    console.log('connections', connections);
-    console.log('connectedItems', getConnectedElemsForBoardItem(connections, boardItemId));
     return {
         ...getBoardItem(board, boardItemId),
         isQueryActive: (activeQueryBoardItemId === boardItemId),

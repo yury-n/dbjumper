@@ -7,37 +7,46 @@ class ResultsTable extends Component {
     constructor(props) {
         super(props);
 
-        this.getCellColor = this.getCellColor.bind(this);
+        this.getTDColor = this.getTDColor.bind(this);
+        this.getTHColor = this.getTHColor.bind(this);
         this.handleCellRightClick = this.handleCellRightClick.bind(this);
     }
 
-    getCellColor(rowIndex, columnIndex) {
+    getTHColor(columnName) {
+        const { highlightedElems, rows } = this.props;
+        const highlightedElem = highlightedElems.find(
+            hElem => (hElem.columnName == columnName
+                        // highlight column th if all values in it are involved
+                        && hElem.values.length == rows.length
+                        && rows.length > 1)
+        );
+        return highlightedElem ? highlightedElem.color : null;
+    }
+
+    getTDColor(columnName, value) {
         const { highlightedElems } = this.props;
         const highlightedElem = highlightedElems.find(
-            hElem => (hElem.rowIndex == rowIndex && hElem.columnIndex == columnIndex)
-                        // hightlighted TH means highlighted whole column
-                        || (hElem.rowIndex == 0 && hElem.columnIndex == columnIndex)
+            hElem => (hElem.columnName == columnName && hElem.values.includes(value))
         );
-        if (highlightedElem) {
-            return highlightedElem.color;
-        } else {
-            return null;
-        }
+        return highlightedElem ? highlightedElem.color : null;
     }
 
     handleCellRightClick(event) {
-        const { onCellClick } = this.props;
+        const { onCellClick, rows } = this.props;
         const cell = event.target;
-        const cellTR = cell.parentNode;
         const boundingRect = cell.getBoundingClientRect();
         const columnIndex = getIndexInParent(cell);
-        // row index in the table as a whole
-        // if current tr is in tbody add +1 -- first row is in thead
-        const rowIndex = getIndexInParent(cellTR) + (cellTR.parentNode.tagName == 'TBODY' ? 1 : 0);
+        const columnName = Object.keys(rows[0])[columnIndex];
+        const values = [];
+        if (cell.tagName == 'TH') {
+            rows.forEach(row => values.push(row[columnName].toString()));
+        } else {
+            values.push(cell.innerText);
+        }
 
         onCellClick({
-            columnIndex,
-            rowIndex,
+            columnName,
+            values,
             boundingRect
         });
         event.preventDefault();
@@ -55,7 +64,7 @@ class ResultsTable extends Component {
             (columnName, columnIndex) => (
                 <th onContextMenu={this.handleCellRightClick}
                     key={columnIndex}
-                    style={{backgroundColor: this.getCellColor(0, columnIndex)}}>
+                    style={{backgroundColor: this.getTHColor(columnName)}}>
                     {columnName}
                 </th>
             )
@@ -65,10 +74,10 @@ class ResultsTable extends Component {
         rows.forEach((row, trIndex) => {
             let tds = [];
             columnNames.forEach((columnName, columnIndex) => {
-                const rowIndex = trIndex + 1; // first row is in thead
-                const cellColor = this.getCellColor(rowIndex, columnIndex);
-                const className = cellColor ? 'noselect' : '';
+                const value = row[columnName].toString();
+                const cellColor = this.getTDColor(columnName, value);
                 const tdStyle = cellColor ? {backgroundColor: cellColor} : {};
+                const className = cellColor ? 'noselect' : '';
                 tds.push(
                     <td onContextMenu={this.handleCellRightClick}
                         key={columnIndex}
@@ -100,8 +109,8 @@ ResultsTable.propTypes = {
     onCellClick: PropTypes.func.isRequired,
     highlightedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,
-        columnIndex: PropTypes.number,
-        rowIndex: PropTypes.number
+        columnName: PropTypes.string.isRequired,
+        values: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
     }))
 };
 

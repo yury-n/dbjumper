@@ -4,18 +4,20 @@ import { connect } from 'react-redux';
 import QueryInput from './QueryInput';
 import CloseButton from './buttons/CloseButton';
 import { getFloatingQueryInput } from '../reducers';
+import { commitQueryInput, changeQueryInput, cancelConnectionCreation } from '../actions';
 
 class FloatingQueryInput extends Component {
 
     render() {
-        const { componentPosition, query } = this.props;
+        const {
+            componentPosition, query, visible,
+            commitQueryInput, changeQueryInput, cancelConnectionCreation
+        } = this.props;
 
         const divStyle = {
             'left': componentPosition.left + 'px',
             'top': componentPosition.top + 'px'
         };
-
-        const { visible } = this.props;
 
         if (!visible) {
             return null;
@@ -25,10 +27,14 @@ class FloatingQueryInput extends Component {
             <div className="floating-query-input" style={divStyle}>
                 <QueryInput active={true}
                             query={query}
-                            onChangeHandler={() => {}}
+                            onChangeHandler={
+                                ({inputValue, inputBoundingRect, cursorPosition}) =>
+                                    changeQueryInput(null, inputValue, inputBoundingRect, cursorPosition)
+                            }
                             onClickHandler={() => {}}
-                            onCommitHandler={() => {}} />
-                <CloseButton onClickHandler={() => {}} />
+                            //onBlurHandler={cancelConnectionCreation}
+                            onCommitHandler={(query) => commitQueryInput(null, query)} />
+                <CloseButton onClickHandler={cancelConnectionCreation} />
             </div>
         );
     }
@@ -46,4 +52,11 @@ const mapStateToProps = (state) => ({
     ...getFloatingQueryInput(state)
 });
 
-export default connect(mapStateToProps, {})(FloatingQueryInput);
+export default connect(
+    mapStateToProps,
+    {
+        cancelConnectionCreation,
+        commitQueryInput,
+        changeQueryInput
+    }
+)(FloatingQueryInput);

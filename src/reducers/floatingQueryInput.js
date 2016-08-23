@@ -1,5 +1,9 @@
 import {
-    CONNECTION_CREATE_FROM
+    CONNECTION_CREATE_FROM,
+    CONNECTION_CREATE_CANCEL,
+    QUERY_INPUT_CHANGE,
+    QUERY_INPUT_COMMIT,
+    SUGGESTIONS_USE
 } from '../actions';
 
 const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
@@ -25,6 +29,25 @@ const floatingQueryInput = (state = {}, action) => {
     switch (action.type) {
         case CONNECTION_CREATE_FROM:
             visible = true;
+            break;
+        case CONNECTION_CREATE_CANCEL:
+        case QUERY_INPUT_COMMIT:
+            visible = false;
+            query = '';
+            break;
+        case QUERY_INPUT_CHANGE:
+            if (action.boardItemId === null) {
+                query = action.query;
+            }
+            break;
+        case SUGGESTIONS_USE:
+            if (visible) {
+                const { suggestion, forQueryPart } = action;
+                const [ forQueryPartStart, forQueryPartEnd ] = forQueryPart;
+                query = query.slice(0, forQueryPartStart) +
+                        suggestion +
+                        query.slice(forQueryPartEnd, query.length);
+            }
             break;
     }
 

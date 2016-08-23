@@ -52,7 +52,7 @@ class QueryInput extends Component {
     }
 
     render() {
-        const { query, active, onClickHandler } = this.props;
+        const { query, active, onClickHandler, onBlurHandler } = this.props;
         return (
             <input type="text"
                    ref="input"
@@ -62,7 +62,8 @@ class QueryInput extends Component {
                    spellCheck="false"
                    value={query}
                    onChange={this.handleChange}
-                   onClick={onClickHandler} />
+                   onClick={onClickHandler}
+                   onBlur={onBlurHandler} />
         );
     }
 }
@@ -72,8 +73,9 @@ QueryInput.propTypes = {
     hasSuggestions: PropTypes.bool.isRequired,
 
     onChangeHandler: PropTypes.func.isRequired,
-    onClickHandler: PropTypes.func.isRequired,
-    onCommitHandler: PropTypes.func.isRequired
+    onClickHandler: PropTypes.func,
+    onBlurHandler: PropTypes.func,
+    onCommitHandler: PropTypes.func
 };
 
 const mapStateToProps = (state) => ({

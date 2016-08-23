@@ -38,3 +38,5 @@ const boardItem = (state = {}, action) => {
 };
 
 export default boardItem;
+
+export const getBoardItemQuery = (state) => state.query;
