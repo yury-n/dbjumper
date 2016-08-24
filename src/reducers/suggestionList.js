@@ -6,7 +6,8 @@ import {
     TABLES_LISTING_FETCH_COMPLETED,
 } from '../actions';
 
-import { getQueryInputClientWidth } from '../utils';
+import { findNearestQuerySeparator, getQueryInputClientWidth } from '../utils';
+import suggestionsReducer from './suggestions';
 
 // sample input: "users.userid=3,5,8;active=1"
 
@@ -24,48 +25,6 @@ import { getQueryInputClientWidth } from '../utils';
 //     as it is the currently inputted (table|column)name
 //     and we'll form our suggestions based on it
 
-const separators = ['=', '.', ';'];
-
-const _findNearestSeparator = (query, offset, direction) => {
-
-    if ((direction == 'left' && offset === 0)  // nothing to the left
-        || (direction == 'right' && offset === query.length)) { // nothing on the right
-
-        return {separator: null, offset: null};
-    }
-
-    let queryPartFromCursor;
-    if (direction == 'left') {
-        queryPartFromCursor = query.slice(0, offset);
-    } else {  // right
-        queryPartFromCursor = query.slice(offset, query.length);
-    }
-
-    let nearestSeparator = null;
-    let nearestSeparatorOffset = null;
-    separators.forEach(separator => {
-        let indexOfFunc = (direction == 'left' ? 'lastIndexOf' : 'indexOf');
-        let currentSeparatorOffset = queryPartFromCursor[indexOfFunc](separator);
-        if (currentSeparatorOffset === -1) {
-            return; // to the next separator
-        }
-        if (nearestSeparatorOffset === null) {
-            nearestSeparator = separator;
-            nearestSeparatorOffset = currentSeparatorOffset;
-            return; // to the next separator
-        }
-        if ((direction == 'left' && currentSeparatorOffset > nearestSeparatorOffset)
-            || (direction == 'right' && currentSeparatorOffset < nearestSeparatorOffset)) {
-            nearestSeparator = separator;
-            nearestSeparatorOffset = currentSeparatorOffset;
-        }
-    });
-    if (nearestSeparator !== null && direction == 'right') {
-        nearestSeparatorOffset += offset;
-    }
-
-    return {separator: nearestSeparator, offset: nearestSeparatorOffset};
-};
 
 const suggestionsSourceReducer = (state = [], action) => {
     switch (action.type) {
@@ -73,101 +32,6 @@ const suggestionsSourceReducer = (state = [], action) => {
             return action.response;
         default:
             return state;
-    }
-};
-
-const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -1}, suggestionSourceState = [], action) => {
-
-    const _emptyState = () => {
-        return {'items': [], 'separatorIndex': -1};
-    };
-
-    const _ifNotOneExactMatchToInput = (input, suggestionsState) => {
-        if (suggestionsState.items.length == 1 && input == suggestionsState.items[0]) {
-            // there is no reason to suggest something that's already been fully inputted
-            return _emptyState();
-        } else {
-            return suggestionsState;
-        }
-    };
-
-    switch (action.type) {
-        case SUGGESTIONS_HIDE:
-        case SUGGESTIONS_USE:
-            return _emptyState();
-
-        case QUERY_INPUT_CHANGE:
-
-            const {query, cursorPosition} = action;
-
-            const separatorLeft = _findNearestSeparator(query, cursorPosition, 'left');
-            const separatorRight = _findNearestSeparator(query, cursorPosition, 'right');
-
-            // sanity check
-            if (separatorLeft.separator == ';'
-                && (query.indexOf('.') == -1 || query.indexOf('.') > separatorLeft.offset)) {
-                // incorrect query -- you can use ';' to add filtering by another column
-                // after one filter has been applied with "table.column=value" syntax
-                return _emptyState();
-            }
-
-            if (separatorLeft.separator === null) {
-
-                const inputtedTableName = query.slice(0, separatorRight.offset || query.length);
-                if (!inputtedTableName.length) {
-                    return _emptyState();
-                }
-                const matchedTableNames = Object.keys(suggestionSourceState).filter(tablename => tablename.indexOf(query) === 0);
-                return _ifNotOneExactMatchToInput(
-                    inputtedTableName,
-                    {items: matchedTableNames, separatorIndex: -1}
-                );
-
-            } else if (separatorLeft.separator == '.' || separatorLeft.separator == ';') {
-
-                const inputtedColumnName = query.slice(separatorLeft.offset + 1, separatorRight.offset || query.length);
-
-                const inputtedTable = query.split('.')[0];
-                const suggestionSourceForInputtedTable = suggestionSourceState[inputtedTable];
-                if (typeof suggestionSourceForInputtedTable == 'undefined') {
-                    return _emptyState();
-                }
-
-                let matchedColumnNames = [];
-                let separatorIndex = -1;
-                ['indexed', 'nonindexed'].forEach(columnType => {
-
-                    if (!suggestionSourceForInputtedTable[columnType + '_columns'].length) {
-                        return;
-                    }
-
-                    matchedColumnNames = [
-                        ...matchedColumnNames,
-                        ...suggestionSourceForInputtedTable[columnType + '_columns'].filter(
-                            columnname => columnname.indexOf(inputtedColumnName) === 0
-                        )
-                    ];
-                    if (columnType == 'indexed' && matchedColumnNames.length) {
-                        // separator between indexed and non-indexed columns
-                        separatorIndex = (matchedColumnNames.length - 1);
-                    }
-                });
-                if (matchedColumnNames[matchedColumnNames.length - 1] == separatorIndex) {
-                    // this would be the case, if all matches are indexed columns
-                    // no need to have a separator
-                    separatorIndex = -1;
-                }
-                return _ifNotOneExactMatchToInput(
-                    inputtedColumnName,
-                    {items: matchedColumnNames, separatorIndex}
-                );
-
-            } else {
-                return _emptyState();
-            }
-
-        default:
-            return suggestionsState;
     }
 };
 
@@ -181,7 +45,7 @@ const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
             // the part of the query currently being entered
             let shiftLeft = 0;
 
-            const separatorLeft = _findNearestSeparator(query, cursorPosition, 'left');
+            const separatorLeft = findNearestQuerySeparator(query, cursorPosition, 'left');
             if (separatorLeft.separator !== null) {
                 const queryBeforeSeparator = query.slice(0, separatorLeft.offset + 1);
                 shiftLeft = getQueryInputClientWidth(queryBeforeSeparator);
@@ -204,8 +68,8 @@ const forQueryPartReducer = (state = [0, 0], action) => {
     switch (action.type) {
         case QUERY_INPUT_CHANGE:
             const { query, cursorPosition } = action;
-            const separatorLeft = _findNearestSeparator(query, cursorPosition, 'left');
-            const separatorRight = _findNearestSeparator(query, cursorPosition, 'right');
+            const separatorLeft = findNearestQuerySeparator(query, cursorPosition, 'left');
+            const separatorRight = findNearestQuerySeparator(query, cursorPosition, 'right');
             return [
                 separatorLeft.offset ? separatorLeft.offset + 1 : 0,
                 separatorRight.offset || query.length

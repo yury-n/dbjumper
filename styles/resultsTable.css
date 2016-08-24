@@ -17,6 +17,11 @@
     text-overflow: ellipsis;
 }
 
+.results-table td.expanded {
+    white-space: normal;
+    max-width: 400px;
+}
+
 .results-table tbody > tr:nth-of-type(2n+1) {
     background: #fbfaf8;
 }

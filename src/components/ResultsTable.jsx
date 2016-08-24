@@ -1,5 +1,6 @@
 import 'styles/resultsTable.css';
 import React, { Component, PropTypes } from 'react';
+import classnames from 'classnames';
 import { getIndexInParent } from '../utils';
 
 class ResultsTable extends Component {
@@ -7,8 +8,11 @@ class ResultsTable extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {expandedTDs: []};
+
         this.getTDColor = this.getTDColor.bind(this);
         this.getTHColor = this.getTHColor.bind(this);
+        this.handleTDClick = this.handleTDClick.bind(this);
         this.handleCellRightClick = this.handleCellRightClick.bind(this);
     }
 
@@ -23,6 +27,12 @@ class ResultsTable extends Component {
         return highlightedElem ? highlightedElem.color : null;
     }
 
+    isTDExpanded(rowIndex, columnIndex) {
+        const { expandedTDs } = this.state;
+        return !!expandedTDs.find(expanded => expanded.columnIndex === columnIndex
+                                              && expanded.rowIndex === rowIndex);
+    }
+    
     getTDColor(columnName, value) {
         const { highlightedElems } = this.props;
         const highlightedElem = highlightedElems.find(
@@ -31,8 +41,17 @@ class ResultsTable extends Component {
         return highlightedElem ? highlightedElem.color : null;
     }
 
+    handleTDClick(event) {
+        const { expandedTDs } = this.state;
+        const cell = event.target;
+        const columnIndex = getIndexInParent(cell);
+        const rowIndex = getIndexInParent(cell.parentNode);
+        expandedTDs.push({columnIndex, rowIndex});
+        this.setState({expandedTDs});
+    }
+
     handleCellRightClick(event) {
-        const { onCellClick, rows } = this.props;
+        const { onCellRightClick, rows } = this.props;
         const cell = event.target;
         const boundingRect = cell.getBoundingClientRect();
         const columnIndex = getIndexInParent(cell);
@@ -44,7 +63,7 @@ class ResultsTable extends Component {
             values.push(cell.innerText);
         }
 
-        onCellClick({
+        onCellRightClick({
             columnName,
             values,
             boundingRect
@@ -71,23 +90,27 @@ class ResultsTable extends Component {
         );
 
         const trs = [];
-        rows.forEach((row, trIndex) => {
+        rows.forEach((row, rowIndex) => {
             let tds = [];
             columnNames.forEach((columnName, columnIndex) => {
-                const value = row[columnName].toString();
+                const value = row[columnName] !== null ? row[columnName].toString() : 'null' ;
                 const cellColor = this.getTDColor(columnName, value);
                 const tdStyle = cellColor ? {backgroundColor: cellColor} : {};
-                const className = cellColor ? 'noselect' : '';
                 tds.push(
-                    <td onContextMenu={this.handleCellRightClick}
+                    <td
+                        onClick={this.handleTDClick}
+                        onContextMenu={this.handleCellRightClick}
                         key={columnIndex}
-                        className={className}
-                        style={tdStyle}>
+                        style={tdStyle}
+                        className={classnames({
+                            noselect: cellColor !== null,
+                            expanded: this.isTDExpanded(rowIndex, columnIndex)
+                        })}>
                         {row[columnName]}
                     </td>
                 );
             });
-            trs.push(<tr key={trIndex}>{tds}</tr>);
+            trs.push(<tr key={rowIndex}>{tds}</tr>);
         });
 
         return (
@@ -106,7 +129,7 @@ class ResultsTable extends Component {
 }
 ResultsTable.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onCellClick: PropTypes.func.isRequired,
+    onCellRightClick: PropTypes.func.isRequired,
     highlightedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,
         columnName: PropTypes.string.isRequired,

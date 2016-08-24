@@ -72,7 +72,7 @@ class SuggestionList extends Component {
         }
         const ulStyle = {
             'left': componentPosition.left + 'px',
-            'top': componentPosition.top + 'px'
+            'top': (document.body.scrollTop + componentPosition.top) + 'px'
         };
 
         const { items: suggestionItems, separatorIndex } = suggestions;

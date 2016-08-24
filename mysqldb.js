@@ -3,7 +3,7 @@ import mysql from 'mysql';
 const HOST     = '192.168.10.10';
 const USER     = 'homestead';
 const PASSWORD = 'secret';
-const DATABASE = 'gifster';
+const DATABASE = 'classicmodels';
 
 const getDbConnection = () => {
 

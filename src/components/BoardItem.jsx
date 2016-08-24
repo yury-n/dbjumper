@@ -25,6 +25,7 @@ class BoardItem extends Component {
 
         return (
             <div className="board-item">
+
                 <QueryInput onChangeHandler={
                                 ({inputValue, inputBoundingRect, cursorPosition}) =>
                                     changeQueryInput(id, inputValue, inputBoundingRect, cursorPosition)
@@ -33,10 +34,12 @@ class BoardItem extends Component {
                             onCommitHandler={() => commitQueryInput(id)}
                             active={isQueryActive}
                             query={query} />
+
                 <CloseButton onClickHandler={() => removeBoardItem(id)} />
+
                 <ResultsTable rows={results}
                               highlightedElems={connectedElems}
-                              onCellClick={(cellData) => createConnectionFrom(id, cellData)} />
+                              onCellRightClick={(cellData) => createConnectionFrom(id, cellData)} />
             </div>
         );
     }

@@ -111,10 +111,14 @@ export const useSuggestion = (suggestion, forQueryPart) => ({
  CONNECTION_*
  */
 
-const connectionColors = ['#cefde8', '#afeefe', '#ffb291', '#ffefbf', '#d5e5a3'];
+const connectionColors = ['#dbfcee', '#f2fcdb', '#fcfadb', '#fcebdb', '#fcdbdb', '#fcdbf2', '#eadbfc', '#dbe2fc', '#dbecfc', '#dbfcfc'];
 let   colorPointer = 0;
 const _getNextConnectionColor = () => {
-    return connectionColors[colorPointer++];
+    const nextColor = connectionColors[colorPointer++];
+    if (colorPointer > connectionColors.length - 1) {
+        colorPointer = 0;
+    }
+    return nextColor;
 };
 
 export const createConnectionFrom = (boardItemId, { columnName, values, boundingRect }) => ({

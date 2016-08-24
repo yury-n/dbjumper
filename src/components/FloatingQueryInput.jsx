@@ -16,7 +16,7 @@ class FloatingQueryInput extends Component {
 
         const divStyle = {
             'left': componentPosition.left + 'px',
-            'top': componentPosition.top + 'px'
+            'top': (document.body.scrollTop + componentPosition.top) + 'px'
         };
 
         if (!visible) {
@@ -32,7 +32,7 @@ class FloatingQueryInput extends Component {
                                     changeQueryInput(null, inputValue, inputBoundingRect, cursorPosition)
                             }
                             onClickHandler={() => {}}
-                            //onBlurHandler={cancelConnectionCreation}
+                            onBlurHandler={cancelConnectionCreation}
                             onCommitHandler={(query) => commitQueryInput(null, query)} />
                 <CloseButton onClickHandler={cancelConnectionCreation} />
             </div>
