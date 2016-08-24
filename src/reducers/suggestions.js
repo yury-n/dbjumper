@@ -27,7 +27,6 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
             return _emptyState();
 
         case QUERY_INPUT_CHANGE:
-
             const {query, cursorPosition} = action;
 
             const separatorLeft = findNearestQuerySeparator(query, cursorPosition, 'left');

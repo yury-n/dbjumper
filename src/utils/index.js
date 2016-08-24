@@ -1,3 +1,9 @@
+export const focusWithoutScroll = (elem) => {
+    var x = window.scrollX, y = window.scrollY;
+    elem.focus();
+    window.scrollTo(x, y);
+};
+
 export const getQueryInputClientWidth = (query) => {
     const queryInputNode = document.createElement('DIV');
     queryInputNode.className = 'query-input';

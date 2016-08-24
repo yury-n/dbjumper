@@ -8,23 +8,59 @@ import { commitQueryInput, changeQueryInput, cancelConnectionCreation } from '..
 
 class FloatingQueryInput extends Component {
 
+    componentWillReceiveProps(nextProps) {
+        const { query: nextQuery } = nextProps;
+        const { query: oldQuery, changeQueryInput } = this.props;
+        if (!oldQuery.length) {
+            return;
+        }
+        // floating query input appends '.' when a table is picked from suggestions
+        // if that's the case we want to trigger QUERY_INPUT_CHANGE event
+        // to autosuggest columns right after we used table autosuggest
+        const tableWasPickedFromAutosuggest = (nextQuery.indexOf('.') == nextQuery.length - 1
+                                                // and make sure it wasn't just typed in
+                                                && nextQuery.length - oldQuery.length > 1);
+        if (tableWasPickedFromAutosuggest) {
+            const inputBoundingRect = this.refs.floatingQueryInput.getBoundingClientRect();
+            changeQueryInput(null, nextQuery, inputBoundingRect, nextQuery.length);
+        }
+    }
+
+    componentDidUpdate() {
+
+        const { visible, targetBoundingRect } = this.props;
+
+        if (!visible) {
+            return;
+        }
+
+        const { floatingQueryInput } = this.refs;
+
+        const targetHeight = targetBoundingRect.height;
+        const componentHeight = floatingQueryInput.clientHeight;
+        const heightDiff = targetHeight - componentHeight;
+
+        const left = targetBoundingRect.right;
+        const top = document.body.scrollTop
+                    + targetBoundingRect.top
+                    + Math.round(heightDiff / 2);
+
+        floatingQueryInput.style.left = left + 'px';
+        floatingQueryInput.style.top = top + 'px';
+    }
+
     render() {
         const {
-            componentPosition, query, visible,
+            query, visible,
             commitQueryInput, changeQueryInput, cancelConnectionCreation
         } = this.props;
-
-        const divStyle = {
-            'left': componentPosition.left + 'px',
-            'top': (document.body.scrollTop + componentPosition.top) + 'px'
-        };
 
         if (!visible) {
             return null;
         }
 
         return (
-            <div className="floating-query-input" style={divStyle}>
+            <div ref="floatingQueryInput" className="floating-query-input">
                 <QueryInput active={true}
                             query={query}
                             onChangeHandler={
@@ -42,10 +78,14 @@ class FloatingQueryInput extends Component {
 FloatingQueryInput.propTypes = {
     visible: PropTypes.bool.isRequired,
     query: PropTypes.string.isRequired,
-    componentPosition: PropTypes.shape({
-        top: PropTypes.number.isRequired,
-        left: PropTypes.number.isRequired
-    }).isRequired
+    targetBoundingRect: PropTypes.shape({
+        top: PropTypes.number,
+        left: PropTypes.number,
+        right: PropTypes.number,
+        bottom: PropTypes.number,
+        width: PropTypes.number,
+        height: PropTypes.number,
+    })
 };
 
 const mapStateToProps = (state) => ({

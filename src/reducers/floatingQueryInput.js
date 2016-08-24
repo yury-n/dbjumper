@@ -6,28 +6,15 @@ import {
     SUGGESTIONS_USE
 } from '../actions';
 
-const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
-    switch (action.type) {
-        case CONNECTION_CREATE_FROM:
-            const { boundingRect } = action;
-            return {
-                left: boundingRect.right,
-                top: boundingRect.top
-            };
-        default:
-            return state;
-    }
-};
-
 const floatingQueryInput = (state = {}, action) => {
 
     let visible = state.visible || false;
     let query = state.query || '';
-    const componentPosition = componentPositionReducer(state.componentPosition, action);
-
+    let targetBoundingRect = state.targetBoundingRect || {};
 
     switch (action.type) {
         case CONNECTION_CREATE_FROM:
+            targetBoundingRect = action.boundingRect;
             visible = true;
             break;
         case CONNECTION_CREATE_CANCEL:
@@ -47,6 +34,11 @@ const floatingQueryInput = (state = {}, action) => {
                 query = query.slice(0, forQueryPartStart) +
                         suggestion +
                         query.slice(forQueryPartEnd, query.length);
+                // append '.' cause just tablename is useless in this context
+                // we need to select a column to create a connection with
+                if (!query.includes('.')) {
+                    query += '.';
+                }
             }
             break;
     }
@@ -54,7 +46,7 @@ const floatingQueryInput = (state = {}, action) => {
     return {
         visible,
         query,
-        componentPosition
+        targetBoundingRect
     };
 };
 

@@ -39,7 +39,11 @@ const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
 
     switch (action.type) {
         case QUERY_INPUT_CHANGE:
-            const { query, cursorPosition, inputBoundingRect } = action;
+            const { query, inputBoundingRect, cursorPosition } = action;
+
+            if (typeof inputBoundingRect == 'undefined') {
+                return state;
+            }
 
             // if needed, shift suggestions block N px from left to place it next to
             // the part of the query currently being entered

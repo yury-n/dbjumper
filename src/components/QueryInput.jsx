@@ -2,12 +2,14 @@ import 'styles/queryInput.css';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { doesQueryInputHaveSuggestions } from '../reducers';
+import { focusWithoutScroll } from '../utils';
 
 class QueryInput extends Component {
 
     constructor(props) {
         super(props);
 
+        this.focusIfActive = this.focusIfActive.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleKeydown = this.handleKeydown.bind(this);
     }
@@ -15,6 +17,11 @@ class QueryInput extends Component {
     componentDidMount() {
         const { input } = this.refs;
         input.addEventListener('keydown', this.handleKeydown);
+        this.focusIfActive();
+    }
+
+    componentDidUpdate() {
+        this.focusIfActive();
     }
 
     componentWillUnmount() {
@@ -22,11 +29,11 @@ class QueryInput extends Component {
         input.removeEventListener('keydown', this.handleKeydown);
     }
 
-    componentDidUpdate() {
+    focusIfActive() {
         const { active } = this.props;
         const { input } = this.refs;
         if (active) {
-            input.focus();
+            focusWithoutScroll(input);
         }
     }
 
@@ -57,7 +64,6 @@ class QueryInput extends Component {
             <input type="text"
                    ref="input"
                    className={'query-input' + (active ? ' query-input--active' : '')}
-                   autoFocus="true"
                    autoComplete="false"
                    spellCheck="false"
                    value={query}

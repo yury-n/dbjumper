@@ -1,7 +1,6 @@
 .floating-query-input {
     position: absolute;
     width: 550px;
-    margin-top: -5px; /* to v-align with td cells that have smaller height */
 }
 
 .floating-query-input .query-input {
