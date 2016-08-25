@@ -5,7 +5,7 @@ const USER     = 'homestead';
 const PASSWORD = 'secret';
 const DATABASE = 'classicmodels';
 
-const getDbConnection = () => {
+export const getDbConnection = () => {
 
     const connection = mysql.createConnection({
         host     : HOST,
@@ -21,9 +21,7 @@ const getDbConnection = () => {
     return connection;
 };
 
-export const getTablesListing = (done) => {
-
-    const con = getDbConnection();
+export const getTablesListing = (con, done, error) => {
 
     con.query(`
         SELECT 
@@ -33,7 +31,9 @@ export const getTablesListing = (done) => {
         WHERE 
             TABLE_SCHEMA = "${DATABASE}" 
     `, (err, rows) => {
-        if (err) throw(err);
+        if (err) {
+            return error('SQL query failed.');
+        }
 
         let results = {};
         rows.forEach(row => {
@@ -50,14 +50,11 @@ export const getTablesListing = (done) => {
             results[tableName][columnGroup].push(columnName);
         });
 
-        con.end();
-        done(results);
+        return done(results);
     });
 };
 
-export const getTableData = (query, done) => {
-
-    const con = getDbConnection();
+export const getTableData = (con, done, error, query) => {
 
     const queryParts = query.split('.');
     const requestedTable = queryParts[0];
@@ -70,7 +67,7 @@ export const getTableData = (query, done) => {
         });
 
         if (!existingTables.includes(requestedTable)) {
-            throw('Invalid table name.');
+            return error('Invalid table name.');
         }
 
         let dbQuery = 'SELECT * FROM ' + requestedTable;
@@ -78,8 +75,7 @@ export const getTableData = (query, done) => {
         if (typeof queryParts[1] == 'undefined') {
             dbQuery += ' LIMIT 10';
             con.query(dbQuery, (err, rows) => {
-                con.end();
-                done(rows);
+                return done(rows);
             });
         } else {
             dbQuery += ' WHERE 1=1 ';
@@ -102,13 +98,19 @@ export const getTableData = (query, done) => {
 
                 let queryArgs = [];
 
+                let filteringInvalid = false;
                 filteringPairs.forEach(filteringPair => {
+                    if (filteringInvalid) {
+                        return;
+                    }
                     let [ key, value ] = filteringPair.split('=');
                     if (!existingColumns.includes(key)) {
-                        throw('Invalid column name.');
+                        filteringInvalid = true;
+                        return error('Invalid column name.');
                     }
-                    if (typeof value == 'undefined') {
-                        throw('Invalid query. Missing filter value.');
+                    if (typeof value == 'undefined' || value === '') {
+                        filteringInvalid = true;
+                        return error('Invalid query. Missing filter value.');
                     }
                     if (value.indexOf(',') === -1) {
                         dbQuery += `AND ${key} = ? `;
@@ -121,11 +123,17 @@ export const getTableData = (query, done) => {
                     }
                 });
 
+                if (filteringInvalid) {
+                    return;
+                }
+
                 dbQuery += ' LIMIT 100';
 
                 con.query(dbQuery, queryArgs, (err, rows) => {
-                    con.end();
-                    done(rows);
+                    if (err) {
+                        return error('SQL query failed.');
+                    }
+                    return done(rows);
                 });
             });
         }

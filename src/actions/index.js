@@ -159,7 +159,7 @@ export const fetchTablesListing = () => (dispatch) => {
                 response
             });
         }
-    );
+    ).catch(error => console.log(error));
 };
 
 export const fetchTableData = (boardItemId) => (dispatch, getState) => {
@@ -178,5 +178,5 @@ export const fetchTableData = (boardItemId) => (dispatch, getState) => {
                 response
             });
         }
-    );
+    ).catch(error => console.log(error));
 };

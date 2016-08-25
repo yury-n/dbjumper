@@ -1,10 +1,10 @@
 import connection, { getConnectedElems } from './connection';
 
 import {
+    BOARD_REMOVE_ITEM,
     CONNECTION_CREATE_FROM,
     CONNECTION_CREATE_TO,
-    CONNECTION_CREATE_CANCEL,
-    QUERY_INPUT_COMMIT
+    CONNECTION_CREATE_CANCEL
 } from '../actions';
 
 const connections = (state = [], action) => {
@@ -22,8 +22,11 @@ const connections = (state = [], action) => {
             return newState;
         case CONNECTION_CREATE_CANCEL:
             return state.filter(connection => typeof connection.to != 'undefined');
-        case QUERY_INPUT_COMMIT:
-            break;
+        case BOARD_REMOVE_ITEM:
+            return state.filter(
+                connection => connection.from.boardItemId !== action.id
+                              && connection.to.boardItemId !== action.id
+            );
         default:
             return state;
     }

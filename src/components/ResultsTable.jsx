@@ -12,8 +12,9 @@ class ResultsTable extends Component {
 
         this.getTDColor = this.getTDColor.bind(this);
         this.getTHColor = this.getTHColor.bind(this);
-        this.handleTDClick = this.handleTDClick.bind(this);
+        this.handleCellClick = this.handleCellClick.bind(this);
         this.handleCellRightClick = this.handleCellRightClick.bind(this);
+        this.handleCellSelectionClick = this.handleCellSelectionClick.bind(this);
     }
 
     getTHColor(columnName) {
@@ -41,7 +42,11 @@ class ResultsTable extends Component {
         return highlightedElem ? highlightedElem.color : null;
     }
 
-    handleTDClick(event) {
+    handleCellClick(event) {
+        if (event.metaKey || event.ctrlKey) {
+            this.handleCellSelectionClick(event);
+            return;
+        }
         const { expandedTDs } = this.state;
         const cell = event.target;
         const columnIndex = getIndexInParent(cell);
@@ -51,7 +56,11 @@ class ResultsTable extends Component {
     }
 
     handleCellRightClick(event) {
-        const { onCellRightClick, rows } = this.props;
+        this.handleCellSelectionClick(event);
+    }
+
+    handleCellSelectionClick(event) {
+        const { onCellSelectionClick, rows } = this.props;
         const cell = event.target;
         const boundingRect = cell.getBoundingClientRect();
         const columnIndex = getIndexInParent(cell);
@@ -63,7 +72,7 @@ class ResultsTable extends Component {
             values.push(cell.innerText);
         }
 
-        onCellRightClick({
+        onCellSelectionClick({
             columnName,
             values,
             boundingRect
@@ -81,7 +90,8 @@ class ResultsTable extends Component {
 
         const ths = columnNames.map(
             (columnName, columnIndex) => (
-                <th onContextMenu={this.handleCellRightClick}
+                <th onClick={this.handleCellClick}
+                    onContextMenu={this.handleCellRightClick}
                     key={columnIndex}
                     style={{backgroundColor: this.getTHColor(columnName)}}>
                     {columnName}
@@ -98,7 +108,7 @@ class ResultsTable extends Component {
                 const tdStyle = cellColor ? {backgroundColor: cellColor} : {};
                 tds.push(
                     <td
-                        onClick={this.handleTDClick}
+                        onClick={this.handleCellClick}
                         onContextMenu={this.handleCellRightClick}
                         key={columnIndex}
                         style={tdStyle}
@@ -129,7 +139,7 @@ class ResultsTable extends Component {
 }
 ResultsTable.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onCellRightClick: PropTypes.func.isRequired,
+    onCellSelectionClick: PropTypes.func.isRequired,
     highlightedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,
         columnName: PropTypes.string.isRequired,

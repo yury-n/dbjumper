@@ -39,7 +39,7 @@ class BoardItem extends Component {
 
                 <ResultsTable rows={results}
                               highlightedElems={connectedElems}
-                              onCellRightClick={(cellData) => createConnectionFrom(id, cellData)} />
+                              onCellSelectionClick={(cellData) => createConnectionFrom(id, cellData)} />
             </div>
         );
     }

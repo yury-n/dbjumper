@@ -23,12 +23,29 @@ app.get('/', (req, res) => {
 });
 
 app.get('/get_tables_listing', (req, res) => {
-    mysqldb.getTablesListing(results => res.json(results));
+    _useReponseFromMysqldbFunc('getTablesListing', req, res);
 });
 
 app.get('/get_table_data', (req, res) => {
-    mysqldb.getTableData(req.query.query, results => res.json(results));
+    _useReponseFromMysqldbFunc('getTableData', req, res, req.query.query);
 });
+
+const _useReponseFromMysqldbFunc = (funcName, req, res, ...args) => {
+    const con = mysqldb.getDbConnection();
+    mysqldb[funcName](
+        con,
+        results => {
+            con.end();
+            res.json(results);
+        },
+        error => {
+            con.end();
+            res.statusMessage = error;
+            res.status(400).end();
+        },
+        ...args
+    );
+};
 
 app.listen(port, error => {
     /* eslint-disable no-console */
