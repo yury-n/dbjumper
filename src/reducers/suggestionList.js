@@ -116,6 +116,9 @@ const suggestionListReducer = (state = {}, action) => {
             }
             break;
     }
+    if (!suggestions.items.length) {
+        visible = false;
+    }
 
     return {
         suggestionsSource,

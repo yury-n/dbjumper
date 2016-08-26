@@ -21,9 +21,9 @@ class SuggestionList extends Component {
     }
 
     handleClickWindow() {
-        const { visible, suggestions, hideSuggestions } = this.props;
+        const { visible, hideSuggestions } = this.props;
 
-        if (!visible || !suggestions.items.length) {
+        if (!visible) {
             return;
         }
 
@@ -34,11 +34,11 @@ class SuggestionList extends Component {
 
     handleKeydown(event) {
         const {
-            suggestions, selectedIndex, forQueryPart,
+            visible, suggestions, selectedIndex, forQueryPart,
             changeSelectedSuggestion, hideSuggestions, useSuggestion
         } = this.props;
 
-        if (!suggestions.items.length) {
+        if (!visible) {
             return;
         }
 
