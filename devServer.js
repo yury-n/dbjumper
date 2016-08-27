@@ -30,6 +30,10 @@ app.get('/get_table_data', (req, res) => {
     _useReponseFromMysqldbFunc('getTableData', req, res, req.query.query);
 });
 
+app.get('/get_table_meta', (req, res) => {
+    _useReponseFromMysqldbFunc('getTableMeta', req, res, req.query.table);
+});
+
 const _useReponseFromMysqldbFunc = (funcName, req, res, ...args) => {
     const con = mysqldb.getDbConnection();
     mysqldb[funcName](

@@ -27,5 +27,5 @@ export const fetchTableData = (query) => {
 
 export const fetchTableMeta = (table) => {
 
-    // planned for queries that end with '#'
+    return fetch('/get_table_meta?table=' + table).then(checkStatus).then(parseJSON);
 };

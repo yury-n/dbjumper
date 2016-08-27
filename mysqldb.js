@@ -1,17 +1,15 @@
 import mysql from 'mysql';
+import dotenv from 'dotenv';
 
-const HOST     = '192.168.10.10';
-const USER     = 'homestead';
-const PASSWORD = 'secret';
-const DATABASE = 'classicmodels';
+dotenv.config();
 
 export const getDbConnection = () => {
 
     const connection = mysql.createConnection({
-        host     : HOST,
-        user     : USER,
-        password : PASSWORD,
-        database : DATABASE
+        host     : process.env.DB_HOST,
+        user     : process.env.DB_USER,
+        password : process.env.DB_PASS,
+        database : process.env.DB_DATABASE
     });
 
     connection.connect(err => {
@@ -29,7 +27,7 @@ export const getTablesListing = (con, done, error) => {
         FROM 
             INFORMATION_SCHEMA.COLUMNS 
         WHERE 
-            TABLE_SCHEMA = "${DATABASE}" 
+            TABLE_SCHEMA = "${process.env.DB_DATABASE}" 
     `, (err, rows) => {
         if (err) {
             return error('SQL query failed.');
@@ -51,6 +49,13 @@ export const getTablesListing = (con, done, error) => {
         });
 
         return done(results);
+    });
+};
+
+export const getTableMeta = (con, done, error, table) => {
+
+    con.query('SHOW FULL COLUMNS FROM ' + table, (err, rows) => {
+        return done(rows);
     });
 };
 
@@ -89,7 +94,7 @@ export const getTableData = (con, done, error, query) => {
                     INFORMATION_SCHEMA.COLUMNS 
                 WHERE
                     TABLE_NAME = "${requestedTable}"
-                    AND TABLE_SCHEMA = "${DATABASE}"
+                    AND TABLE_SCHEMA = "${process.env.DB_DATABASE}"
             `, (err, rows) => {
 
                 const existingColumns = rows.map(row => row['COLUMN_NAME']);

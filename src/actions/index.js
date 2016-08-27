@@ -13,6 +13,8 @@ export const SUGGESTIONS_HIDE = 'SUGGESTIONS_HIDE';
 export const SUGGESTIONS_USE = 'SUGGESTIONS_USE';
 export const TABLE_DATA_FETCH = 'TABLE_DATA_FETCH';
 export const TABLE_DATA_FETCH_COMPLETED = 'TABLE_DATA_FETCH_COMPLETED';
+export const TABLE_META_FETCH = 'TABLE_META_FETCH';
+export const TABLE_META_FETCH_COMPLETED = 'TABLE_META_FETCH_COMPLETED';
 export const TABLES_LISTING_FETCH = 'TABLES_LISTING_FETCH';
 export const TABLES_LISTING_FETCH_COMPLETED = 'TABLES_LISTING_FETCH_COMPLETED';
 export const QUERY_INPUT_CHANGE = 'QUERY_INPUT_CHANGE';
@@ -73,9 +75,8 @@ export const commitQueryInput = (boardItemId, query = '') => (dispatch, getState
     dispatch({
         type: QUERY_INPUT_COMMIT
     });
-    if (boardItemId !== null) {
-        return fetchTableData(boardItemId)(dispatch, getState);
-    } else {
+    if (boardItemId === null) { // committed from FloatingQueryInput
+
         let toBoardItemId = v4();
         const state = getState();
         const connection = getCurrentlyCreatedConnection(getConnections(state));
@@ -85,6 +86,12 @@ export const commitQueryInput = (boardItemId, query = '') => (dispatch, getState
         dispatch(createConnectionTo(toBoardItemId, columnName, values));
 
         return fetchTableData(toBoardItemId)(dispatch, getState);
+    } else {
+        if (query.slice(-1) == '#') {
+            return fetchTableMeta(boardItemId)(dispatch, getState);
+        } else {
+            return fetchTableData(boardItemId)(dispatch, getState);   
+        }
     }
 };
 
@@ -174,6 +181,26 @@ export const fetchTableData = (boardItemId) => (dispatch, getState) => {
         response => {
             dispatch({
                 type: TABLE_DATA_FETCH_COMPLETED,
+                boardItemId,
+                response
+            });
+        }
+    ).catch(error => console.log(error));
+};
+
+export const fetchTableMeta = (boardItemId) => (dispatch, getState) => {
+    dispatch({
+        type: TABLE_META_FETCH
+    });
+    const board = getBoard(getState());
+    const boardItem = getBoardItem(board, boardItemId);
+    const query = getBoardItemQuery(boardItem);
+    const table = query.replace('#', '');
+
+    return api.fetchTableMeta(table).then(
+        response => {
+            dispatch({
+                type: TABLE_META_FETCH_COMPLETED,
                 boardItemId,
                 response
             });
