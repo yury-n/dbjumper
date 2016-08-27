@@ -1,4 +1,5 @@
 import {
+    COLUMN_REMOVE,
     BOARD_ADD_ITEM,
     BOARD_REMOVE_ITEM,
     QUERY_INPUT_CHANGE,
@@ -29,6 +30,7 @@ const boardItems = (state = [], action) => {
             ];
         case QUERY_INPUT_CHANGE:
         case TABLE_DATA_FETCH_COMPLETED:
+        case COLUMN_REMOVE:
             // proxy action to the corresponding boardItem
             boardItemIndex = findBoardItemIndex(action.boardItemId);
             let newState = [...state];

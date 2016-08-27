@@ -22,6 +22,12 @@
     max-width: 400px;
 }
 
+.results-table th.semitransparent,
+.results-table td.semitransparent {
+    color: #646464;
+    background: #f4f3ef;
+}
+
 .results-table tbody > tr:nth-of-type(2n+1) {
     background: #fbfaf8;
 }

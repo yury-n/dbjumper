@@ -6,6 +6,7 @@ import { getBoardItem } from '../reducers/board';
 import { getBoardItemQuery } from '../reducers/boardItem';
 import { getCurrentlyCreatedConnection } from '../reducers/connections';
 
+export const COLUMN_REMOVE = 'COLUMN_REMOVE';
 export const BOARD_ADD_ITEM = 'BOARD_ADD_ITEM';
 export const BOARD_REMOVE_ITEM = 'BOARD_REMOVE_ITEM';
 export const SUGGESTIONS_CHANGE_SELECTED = 'SUGGESTIONS_CHANGE_SELECTED';
@@ -207,3 +208,13 @@ export const fetchTableMeta = (boardItemId) => (dispatch, getState) => {
         }
     ).catch(error => console.log(error));
 };
+
+/*
+OTHERS
+ */
+
+export const removeColumn = (boardItemId, columnName) => ({
+    type: COLUMN_REMOVE,
+    boardItemId,
+    columnName
+});
