@@ -25,7 +25,6 @@ class ResultsTable extends Component {
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
         this.handleCellClick = this.handleCellClick.bind(this);
-        this.handleCellRightClick = this.handleCellRightClick.bind(this);
         this.handleCellSelectionClick = this.handleCellSelectionClick.bind(this);
     }
 
@@ -112,10 +111,6 @@ class ResultsTable extends Component {
         this.setState({expandedTDs});
     }
 
-    handleCellRightClick(event) {
-        this.handleCellSelectionClick(event);
-    }
-
     handleCellSelectionClick(event) {
         const { onCellSelectionClick, rows } = this.props;
         const cell = event.target;
@@ -148,9 +143,7 @@ class ResultsTable extends Component {
 
         const ths = columnNames.map(
             (columnName, columnIndex) => (
-                <th onClick={this.handleCellClick}
-                    onContextMenu={this.handleCellRightClick}
-                    key={columnIndex}
+                <th key={columnIndex}
                     style={{backgroundColor: this.getTHColor(columnName)}}
                     className={classnames({
                         semitransparent: columnIndex === columnIndexMarkedForRemoval
@@ -186,8 +179,7 @@ class ResultsTable extends Component {
             <table className="results-table"
                    onMouseMove={this.handleMouseMove}
                    onMouseLeave={this.handleMouseLeave}
-                   onClick={this.handleCellClick}
-                   onContextMenu={this.handleCellRightClick}>
+                   onClick={this.handleCellClick}>
                 <thead>
                     <tr>
                         {ths}

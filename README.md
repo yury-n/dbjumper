@@ -16,7 +16,7 @@ Tab/Enter to select a suggestion. If there's no suggestions, Enter submits the q
 ![alt tag](https://github.com/yury-n/dbjumper/blob/master/demo/filtering.gif)
 
 #### Connections
-Cmd/Ctrl+Click or RightClick on a TD or TH.
+(Cmd/Ctrl)+Click on a TD or TH.
 
 ![alt tag](https://github.com/yury-n/dbjumper/blob/master/demo/connections.gif)
 
