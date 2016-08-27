@@ -40,23 +40,29 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
                 return _emptyState();
             }
 
-            if (separatorLeft.separator === null) {
+            if (separatorLeft.separator === null || separatorLeft.separator == '+') {
 
-                const inputtedTableName = query.slice(0, separatorRight.offset || query.length);
+                const inputtedTableName = query.slice(
+                    separatorLeft.offset ? separatorLeft.offset + 1 : 0,
+                    separatorRight.offset ? separatorRight.offset : query.length
+                );
                 if (!inputtedTableName.length) {
                     return _emptyState();
                 }
                 const matchedTableNames = Object.keys(suggestionSourceState).filter(
-                    tablename => tablename.indexOf(query) === 0
+                    tablename => tablename.indexOf(inputtedTableName) === 0
                 );
                 return _ifNotOneExactMatchToInput(
                     inputtedTableName,
                     {items: matchedTableNames, separatorIndex: -1}
                 );
 
-            } else if (separatorLeft.separator == '.' || separatorLeft.separator == ';') {
+            } else if (['.', ';', '('].includes(separatorLeft.separator)) {
 
-                const inputtedColumnName = query.slice(separatorLeft.offset + 1, separatorRight.offset || query.length);
+                const inputtedColumnName = query.slice(
+                    separatorLeft.offset + 1,
+                    separatorRight.offset ? separatorRight.offset : query.length
+                );
 
                 const inputtedTable = query.split('.')[0];
                 const suggestionSourceForInputtedTable = suggestionSourceState[inputtedTable];

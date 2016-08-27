@@ -89,26 +89,25 @@ class ResultsTable extends Component {
     }
 
     handleCellClick(event) {
-        if (event.altKey) {
-            const { columnIndexMarkedForRemoval } = this.state;
-            const { columnRemovalHandler, rows } = this.props;
-            this.setState({columnIndexMarkedForRemoval: null});
-            const columnNames = Object.keys(rows[0]);
-            const columnToRemove = columnNames[columnIndexMarkedForRemoval];
-            columnRemovalHandler(columnToRemove);
-            event.preventDefault();
-            return;
-        }
-        if (event.metaKey || event.ctrlKey) {
-            this.handleCellSelectionClick(event);
-            return;
-        }
-        const { expandedTDs } = this.state;
         const cell = event.target;
         const columnIndex = getIndexInParent(cell);
         const rowIndex = getIndexInParent(cell.parentNode);
-        expandedTDs.push({columnIndex, rowIndex});
-        this.setState({expandedTDs});
+        if (event.altKey) {
+            // remove
+            const { columnRemovalHandler, rows } = this.props;
+            this.setState({columnIndexMarkedForRemoval: null});
+            const columnNames = Object.keys(rows[0]);
+            const columnToRemove = columnNames[columnIndex];
+            columnRemovalHandler(columnToRemove);
+        } else if (event.metaKey || event.ctrlKey) {
+            // select
+            this.handleCellSelectionClick(event);
+        } else {
+            // expand
+            const { expandedTDs } = this.state;
+            expandedTDs.push({columnIndex, rowIndex});
+            this.setState({expandedTDs});
+        }
     }
 
     handleCellSelectionClick(event) {

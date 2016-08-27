@@ -29,7 +29,7 @@ export const getIndexInParent = (node) => {
 };
 
 export const findNearestQuerySeparator = (query, offset, direction) => {
-    const possibleSeparators = ['=', '.', ';'];
+    const possibleSeparators = ['=', '.', ';', '+', '(', ')'];
     const nearest = findNearestOccurrence(possibleSeparators, query, offset, direction);
     return {
         separator: nearest.occurrence,
