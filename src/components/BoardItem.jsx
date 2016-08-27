@@ -5,7 +5,6 @@ import QueryInput from './QueryInput';
 import CloseButton from './buttons/CloseButton';
 import ResultsTable from './ResultsTable';
 import {
-    removeColumn,
     removeBoardItem,
     changeQueryInput, focusQueryInput, commitQueryInput,
     createConnectionFrom
@@ -18,8 +17,7 @@ class BoardItem extends Component {
 
     render() {
         const {
-            id, query, isQueryActive, results, connectedElems,
-            removeColumn,
+            id, query, isQueryActive, results, hiddenColumns, connectedElems,
             removeBoardItem,
             changeQueryInput, focusQueryInput, commitQueryInput,
             createConnectionFrom
@@ -40,9 +38,9 @@ class BoardItem extends Component {
                 <CloseButton onClickHandler={() => removeBoardItem(id)} />
 
                 <ResultsTable rows={results}
+                              hiddenColumns={hiddenColumns}
                               highlightedElems={connectedElems}
-                              onCellSelectionClick={cellData => createConnectionFrom(id, cellData)}
-                              columnRemovalHandler={columnName => removeColumn(id, columnName)} />
+                              onCellSelectionClick={cellData => createConnectionFrom(id, cellData)} />
             </div>
         );
     }
@@ -79,7 +77,6 @@ const mapStateToProps = (state, params) => {
 export default connect(
     mapStateToProps,
     {
-        removeColumn,
         removeBoardItem,
         changeQueryInput, focusQueryInput, commitQueryInput,
         createConnectionFrom

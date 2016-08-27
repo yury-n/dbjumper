@@ -14,18 +14,19 @@ const checkStatus = (response) => {
     }
 };
 
+const endpoint = 'http://gifster.local/dbjumper/';
+
 export const fetchTablesListing = () => {
 
-    return fetch('/get_tables_listing').then(checkStatus).then(parseJSON);
-
+    return fetch(endpoint + '?action=get_tables_listing').then(checkStatus).then(parseJSON);
 };
 
 export const fetchTableData = (query) => {
 
-    return fetch('/get_table_data?query=' + query).then(checkStatus).then(parseJSON);
+    return fetch(endpoint + '?action=get_table_data&query=' + query).then(checkStatus).then(parseJSON);
 };
 
 export const fetchTableMeta = (table) => {
 
-    return fetch('/get_table_meta?table=' + table).then(checkStatus).then(parseJSON);
+    return fetch(endpoint + '?action=get_table_meta&table=' + table).then(checkStatus).then(parseJSON);
 };

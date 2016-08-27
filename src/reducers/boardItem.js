@@ -1,5 +1,4 @@
 import {
-    COLUMN_REMOVE,
     BOARD_ADD_ITEM,
     QUERY_INPUT_CHANGE,
     SUGGESTIONS_USE,
@@ -12,7 +11,8 @@ const boardItem = (state = {}, action) => {
             return {
                 id: action.id,
                 query: action.query,
-                results: []
+                results: [],
+                hiddenColumns: []
             };
         case QUERY_INPUT_CHANGE:
             return {
@@ -32,14 +32,6 @@ const boardItem = (state = {}, action) => {
             return {
                 ...state,
                 results: action.response
-            };
-        case COLUMN_REMOVE:
-            return {
-                ...state,
-                results: state.results.map(row => {
-                    delete row[action.columnName];
-                    return row;
-                })
             };
         default:
             return state;

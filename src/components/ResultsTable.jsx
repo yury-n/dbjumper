@@ -15,7 +15,8 @@ class ResultsTable extends Component {
 
         this.state = {
             expandedTDs: [],
-            columnIndexMarkedForRemoval: null
+            previewHidedColumnIndex: null,
+            hiddenColumnIndexes: []
         };
 
         this.getTDColor = this.getTDColor.bind(this);
@@ -38,38 +39,13 @@ class ResultsTable extends Component {
         window.removeEventListener('keyup', this.handleKeyup);
     }
 
-    getTHColor(columnName) {
-        const { highlightedElems, rows } = this.props;
-        const highlightedElem = highlightedElems.find(
-            hElem => (hElem.columnName == columnName
-                        // highlight column th if all values in it are involved
-                        && hElem.values.length == rows.length
-                        && rows.length > 1)
-        );
-        return highlightedElem ? highlightedElem.color : null;
-    }
-
-    isTDExpanded(rowIndex, columnIndex) {
-        const { expandedTDs } = this.state;
-        return !!expandedTDs.find(expanded => expanded.columnIndex === columnIndex
-                                              && expanded.rowIndex === rowIndex);
-    }
-    
-    getTDColor(columnName, value) {
-        const { highlightedElems } = this.props;
-        const highlightedElem = highlightedElems.find(
-            hElem => (hElem.columnName == columnName && hElem.values.includes(value))
-        );
-        return highlightedElem ? highlightedElem.color : null;
-    }
-
     handleKeyup() {
-        this.setState({columnIndexMarkedForRemoval: null});
+        this.setState({previewHidedColumnIndex: null});
     }
 
     handleKeydown(event) {
         if (this.mousePointingColumnIndex && event.altKey) {
-            this.setState({columnIndexMarkedForRemoval: this.mousePointingColumnIndex});
+            this.setState({previewHidedColumnIndex: this.mousePointingColumnIndex});
         }
     }
 
@@ -78,14 +54,14 @@ class ResultsTable extends Component {
         const columnIndex = getIndexInParent(cell);
         this.mousePointingColumnIndex = columnIndex;
         if (event.altKey) {
-            this.setState({columnIndexMarkedForRemoval: columnIndex});
+            this.setState({previewHidedColumnIndex: columnIndex});
         } else {
-            this.setState({columnIndexMarkedForRemoval: null});
+            this.setState({previewHidedColumnIndex: null});
         }
     }
 
     handleMouseLeave() {
-        this.setState({columnIndexMarkedForRemoval: null});
+        this.setState({previewHidedColumnIndex: null});
     }
 
     handleCellClick(event) {
@@ -94,11 +70,8 @@ class ResultsTable extends Component {
         const rowIndex = getIndexInParent(cell.parentNode);
         if (event.altKey) {
             // remove
-            const { columnRemovalHandler, rows } = this.props;
-            this.setState({columnIndexMarkedForRemoval: null});
-            const columnNames = Object.keys(rows[0]);
-            const columnToRemove = columnNames[columnIndex];
-            columnRemovalHandler(columnToRemove);
+            const { hiddenColumnIndexes } = this.state;
+            this.setState({hiddenColumnIndexes: [...hiddenColumnIndexes, columnIndex]});
         } else if (event.metaKey || event.ctrlKey) {
             // select
             this.handleCellSelectionClick(event);
@@ -131,21 +104,55 @@ class ResultsTable extends Component {
         event.preventDefault();
     }
 
+    isColumnHidden(columnIndex) {
+        return this.state.hiddenColumnIndexes.includes(columnIndex);
+    }
+
+    isTDExpanded(rowIndex, columnIndex) {
+        const { expandedTDs } = this.state;
+        return !! expandedTDs.find(expanded =>
+                        expanded.columnIndex === columnIndex
+                        && expanded.rowIndex === rowIndex
+        );
+    }
+
+    getTDColor(columnName, value) {
+        const { highlightedElems } = this.props;
+        const highlightedElem = highlightedElems.find(
+            hElem => (hElem.columnName == columnName && hElem.values.includes(value))
+        );
+        return highlightedElem ? highlightedElem.color : null;
+    }
+
+    getTHColor(columnName) {
+        const { highlightedElems, rows } = this.props;
+        const highlightedElem = highlightedElems.find(
+            hElem => (hElem.columnName == columnName
+            // highlight column th if all values in it are involved
+            && hElem.values.length == rows.length
+            && rows.length > 1)
+        );
+        return highlightedElem ? highlightedElem.color : null;
+    }
+
     render() {
-        const { columnIndexMarkedForRemoval } = this.state;
+        const { previewHidedColumnIndex } = this.state;
         const { rows } = this.props;
 
         if (!rows.length) {
             return null;
         }
-        const columnNames = Object.keys(rows[0]);
+        const columnNames = Object.keys(rows[0])
+                                  .filter(
+                                        (columnName, columnIndex) =>
+                                            !this.isColumnHidden(columnIndex));
 
         const ths = columnNames.map(
             (columnName, columnIndex) => (
                 <th key={columnIndex}
                     style={{backgroundColor: this.getTHColor(columnName)}}
                     className={classnames({
-                        semitransparent: columnIndex === columnIndexMarkedForRemoval
+                        semitransparent: columnIndex === previewHidedColumnIndex
                     })}>
                     {columnName}
                 </th>
@@ -165,7 +172,7 @@ class ResultsTable extends Component {
                         className={classnames({
                             noselect: cellColor !== null,
                             expanded: this.isTDExpanded(rowIndex, columnIndex),
-                            semitransparent: columnIndex === columnIndexMarkedForRemoval
+                            semitransparent: columnIndex === previewHidedColumnIndex
                         })}>
                         {row[columnName]}
                     </td>
@@ -193,13 +200,13 @@ class ResultsTable extends Component {
 }
 ResultsTable.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
+    hiddenColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
     highlightedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,
         columnName: PropTypes.string.isRequired,
         values: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
     })),
-    onCellSelectionClick: PropTypes.func.isRequired,
-    columnRemovalHandler: PropTypes.func.isRequired
+    onCellSelectionClick: PropTypes.func.isRequired
 };
 
 export default ResultsTable;
