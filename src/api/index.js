@@ -23,7 +23,7 @@ export const fetchTablesListing = () => {
 
 export const fetchTableData = (query) => {
 
-    return fetch(endpoint + '?action=get_table_data&query=' + query).then(checkStatus).then(parseJSON);
+    return fetch(endpoint + '?action=get_table_data&query=' + encodeURIComponent(query)).then(checkStatus).then(parseJSON);
 };
 
 export const fetchTableMeta = (table) => {
