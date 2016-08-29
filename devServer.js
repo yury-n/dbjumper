@@ -19,34 +19,35 @@ app.use('/static', Express.static(__dirname + '/static'));
 app.use(favicon(__dirname + '/favicon.ico'));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.get('/get_tables_listing', (req, res) => {
-    _useReponseFromMysqldbFunc('getTablesListing', req, res);
-});
-
-app.get('/get_table_data', (req, res) => {
-    _useReponseFromMysqldbFunc('getTableData', req, res, req.query.query);
-});
-
-app.get('/get_table_meta', (req, res) => {
-    _useReponseFromMysqldbFunc('getTableMeta', req, res, req.query.table);
+    switch (req.query.action) {
+        case 'get_tables_listing':
+            _useReponseFromMysqldbFunc('getTablesListing', req, res);
+            break;
+        case 'get_table_data':
+            _useReponseFromMysqldbFunc('getTableData', req, res, req.query.query);
+            break;
+        case 'get_table_meta':
+            _useReponseFromMysqldbFunc('getTableMeta', req, res, req.query.table);
+            break;
+        default:
+            res.sendFile(path.join(__dirname, 'index.html'));
+    }
 });
 
 const _useReponseFromMysqldbFunc = (funcName, req, res, ...args) => {
-    const con = mysqldb.getDbConnection();
+    const onError = error => {
+        con.end();
+        res.statusMessage = error;
+        res.status(400).end();
+    };
+    const con = mysqldb.getDbConnection(onError);
     mysqldb[funcName](
         con,
         results => {
             con.end();
             res.json(results);
         },
-        error => {
-            con.end();
-            res.statusMessage = error;
-            res.status(400).end();
-        },
+        onError,
         ...args
     );
 };

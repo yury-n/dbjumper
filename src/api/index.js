@@ -14,7 +14,7 @@ const checkStatus = (response) => {
     }
 };
 
-const endpoint = 'http://gifster.local/dbjumper/';
+const endpoint = '/';
 
 export const fetchTablesListing = () => {
 

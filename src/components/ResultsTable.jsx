@@ -6,17 +6,17 @@ import { getIndexInParent } from '../utils';
 
 class ResultsTable extends Component {
 
-    mousePointingColumnIndex = null;
+    mousePointingColumn = null;
 
-    //shouldComponentUpdate = shouldPureComponentUpdate;
+    shouldComponentUpdate = shouldPureComponentUpdate;
 
     constructor(props) {
         super(props);
 
         this.state = {
             expandedTDs: [],
-            previewHidedColumnIndex: null,
-            hiddenColumnIndexes: []
+            previewHiddenColumn: null,
+            hiddenColumns: []
         };
 
         this.isColumnHidden = this.isColumnHidden.bind(this);
@@ -42,54 +42,69 @@ class ResultsTable extends Component {
     }
 
     handleKeyup() {
-        this.setState({previewHidedColumnIndex: null});
+        this.setState({previewHiddenColumn: null});
     }
 
     handleKeydown(event) {
-        if (this.mousePointingColumnIndex && event.altKey) {
-            this.setState({previewHidedColumnIndex: this.mousePointingColumnIndex});
+        if (this.mousePointingColumn && event.altKey) {
+            this.setState({previewHiddenColumn: this.mousePointingColumn});
         }
+    }
+
+    getColumnNames() {
+        const { rows } = this.props;
+        return Object.keys(rows[0])
+                     .filter(
+                        (columnName) =>
+                            !this.isColumnHidden(columnName));
+    }
+
+    getColumnNameForCell(cell) {
+        const columnIndex = getIndexInParent(cell);
+        const columnNames = this.getColumnNames();
+        return columnNames[columnIndex];
     }
 
     handleMouseMove(event) {
         const cell = event.target;
-        const columnIndex = getIndexInParent(cell);
-        this.mousePointingColumnIndex = columnIndex;
+        const columnName = this.getColumnNameForCell(cell);
+
+        this.mousePointingColumn = columnName;
         if (event.altKey) {
-            this.setState({previewHidedColumnIndex: columnIndex});
+            this.setState({previewHiddenColumn: columnName});
         } else {
-            this.setState({previewHidedColumnIndex: null});
+            this.setState({previewHiddenColumn: null});
         }
     }
 
     handleMouseLeave() {
-        this.setState({previewHidedColumnIndex: null});
+        this.setState({previewHiddenColumn: null});
     }
 
     handleCellClick(event) {
         const cell = event.target;
-        const columnIndex = getIndexInParent(cell);
+        const columnName = this.getColumnNameForCell(cell);
         const rowIndex = getIndexInParent(cell.parentNode);
+
         if (event.altKey) {
             // remove
-            const { hiddenColumnIndexes } = this.state;
-            this.setState({hiddenColumnIndexes: [...hiddenColumnIndexes, columnIndex]});
+            const { hiddenColumns } = this.state;
+            this.setState({hiddenColumns: [...hiddenColumns, columnName]});
         } else if (event.metaKey || event.ctrlKey) {
             // select
             this.handleCellSelectionClick(event);
         } else {
             // expand
             const { expandedTDs } = this.state;
-            this.setState({expandedTDs: [...expandedTDs, ...{columnIndex, rowIndex}]});
+            this.setState({expandedTDs: [...expandedTDs, ...{columnName, rowIndex}]});
         }
     }
 
     handleCellSelectionClick(event) {
         const { onCellSelectionClick, rows } = this.props;
         const cell = event.target;
+        const columnName = this.getColumnNameForCell(cell);
         const boundingRect = cell.getBoundingClientRect();
-        const columnIndex = getIndexInParent(cell);
-        const columnName = Object.keys(rows[0])[columnIndex];
         const values = [];
         if (cell.tagName == 'TH') {
             rows.forEach(row => values.push(row[columnName].toString()));
@@ -105,15 +120,15 @@ class ResultsTable extends Component {
         event.preventDefault();
     }
 
-    isColumnHidden(columnIndex) {
-        return this.state.hiddenColumnIndexes.includes(columnIndex);
+    isColumnHidden(columnName) {
+        const { hiddenColumns } = this.state;
+        return hiddenColumns.includes(columnName);
     }
 
-    isTDExpanded(rowIndex, columnIndex) {
+    isTDExpanded(columnName, rowIndex) {
         const { expandedTDs } = this.state;
-        console.log('expandedTDs', expandedTDs);
         return !! expandedTDs.find(expanded =>
-                        expanded.columnIndex === columnIndex
+                        expanded.columnName === columnName
                         && expanded.rowIndex === rowIndex
         );
     }
@@ -142,23 +157,20 @@ class ResultsTable extends Component {
     }
 
     render() {
-        const { previewHidedColumnIndex } = this.state;
         const { rows } = this.props;
+        const { previewHiddenColumn } = this.state;
 
         if (!rows.length) {
             return null;
         }
-        const columnNames = Object.keys(rows[0])
-                                  .filter(
-                                        (columnName, columnIndex) =>
-                                            !this.isColumnHidden(columnIndex));
+        const columnNames = this.getColumnNames();
 
         const ths = columnNames.map(
             (columnName, columnIndex) => (
                 <th key={columnIndex}
                     style={{backgroundColor: this.getTHColor(columnName)}}
                     className={classnames({
-                        semitransparent: columnIndex === previewHidedColumnIndex
+                        semitransparent: columnName === previewHiddenColumn
                     })}>
                     {columnName}
                 </th>
@@ -172,14 +184,13 @@ class ResultsTable extends Component {
                 const value = row[columnName] !== null ? row[columnName].toString() : 'null' ;
                 const cellColor = this.getTDColor(columnName, value);
                 const tdStyle = cellColor ? {backgroundColor: cellColor} : {};
-                console.log(this.isTDExpanded(rowIndex, columnIndex));
                 tds.push(
                     <td key={columnIndex}
                         style={tdStyle}
                         className={classnames({
                             noselect: cellColor !== null,
-                            expanded: this.isTDExpanded(rowIndex, columnIndex),
-                            semitransparent: columnIndex === previewHidedColumnIndex
+                            expanded: this.isTDExpanded(columnName, rowIndex),
+                            semitransparent: columnName === previewHiddenColumn
                         })}>
                         {row[columnName]}
                     </td>
