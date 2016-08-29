@@ -8,7 +8,7 @@ class ResultsTable extends Component {
 
     mousePointingColumnIndex = null;
 
-    shouldComponentUpdate = shouldPureComponentUpdate;
+    //shouldComponentUpdate = shouldPureComponentUpdate;
 
     constructor(props) {
         super(props);
@@ -19,6 +19,8 @@ class ResultsTable extends Component {
             hiddenColumnIndexes: []
         };
 
+        this.isColumnHidden = this.isColumnHidden.bind(this);
+        this.isTDExpanded = this.isTDExpanded.bind(this);
         this.getTDColor = this.getTDColor.bind(this);
         this.getTHColor = this.getTHColor.bind(this);
         this.handleKeyup = this.handleKeyup.bind(this);
@@ -78,8 +80,7 @@ class ResultsTable extends Component {
         } else {
             // expand
             const { expandedTDs } = this.state;
-            expandedTDs.push({columnIndex, rowIndex});
-            this.setState({expandedTDs});
+            this.setState({expandedTDs: [...expandedTDs, ...{columnIndex, rowIndex}]});
         }
     }
 
@@ -110,6 +111,7 @@ class ResultsTable extends Component {
 
     isTDExpanded(rowIndex, columnIndex) {
         const { expandedTDs } = this.state;
+        console.log('expandedTDs', expandedTDs);
         return !! expandedTDs.find(expanded =>
                         expanded.columnIndex === columnIndex
                         && expanded.rowIndex === rowIndex
@@ -119,7 +121,8 @@ class ResultsTable extends Component {
     getTDColor(columnName, value) {
         const { highlightedElems } = this.props;
         const highlightedElem = highlightedElems.find(
-            hElem => (hElem.columnName == columnName && hElem.values.includes(value))
+            hElem => (hElem.columnName == columnName
+                        && (!hElem.values.length || hElem.values.includes(value)))
         );
         return highlightedElem ? highlightedElem.color : null;
     }
@@ -127,10 +130,13 @@ class ResultsTable extends Component {
     getTHColor(columnName) {
         const { highlightedElems, rows } = this.props;
         const highlightedElem = highlightedElems.find(
-            hElem => (hElem.columnName == columnName
-            // highlight column th if all values in it are involved
-            && hElem.values.length == rows.length
-            && rows.length > 1)
+            hElem => (
+                hElem.columnName == columnName
+                // highlight column th if all values in it are involved
+                // or values field is empty
+                && (!hElem.values.length || hElem.values.length == rows.length)
+                && rows.length > 1
+            )
         );
         return highlightedElem ? highlightedElem.color : null;
     }
@@ -166,6 +172,7 @@ class ResultsTable extends Component {
                 const value = row[columnName] !== null ? row[columnName].toString() : 'null' ;
                 const cellColor = this.getTDColor(columnName, value);
                 const tdStyle = cellColor ? {backgroundColor: cellColor} : {};
+                console.log(this.isTDExpanded(rowIndex, columnIndex));
                 tds.push(
                     <td key={columnIndex}
                         style={tdStyle}

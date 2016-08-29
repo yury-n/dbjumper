@@ -31,7 +31,7 @@ class BoardItem extends Component {
                                     changeQueryInput(id, inputValue, inputBoundingRect, cursorPosition)
                             }
                             onClickHandler={() => {if (!isQueryActive) focusQueryInput(id)}}
-                            onCommitHandler={() => commitQueryInput(id)}
+                            onCommitHandler={(query) => commitQueryInput(id, query)}
                             active={isQueryActive}
                             query={query} />
 

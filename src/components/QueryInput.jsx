@@ -45,7 +45,7 @@ class QueryInput extends Component {
         // committing the query
         if (event.keyCode == '13' && !hasSuggestions) {
             const inputValue = event.target.value;
-            onCommitHandler(inputValue);
+            onCommitHandler(inputValue, event);
         }
     }
 

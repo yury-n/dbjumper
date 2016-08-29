@@ -2,14 +2,15 @@ import connection, { getConnectedElems } from './connection';
 
 import {
     BOARD_REMOVE_ITEM,
+    CONNECTION_CREATE,
     CONNECTION_CREATE_FROM,
     CONNECTION_CREATE_TO,
-    CONNECTION_CREATE_CANCEL,
-    QUERY_INPUT_COMMIT
+    CONNECTION_CREATE_CANCEL
 } from '../actions';
 
 const connections = (state = [], action) => {
     switch (action.type) {
+        case CONNECTION_CREATE:
         case CONNECTION_CREATE_FROM:
             return [
                 ...state,
@@ -28,13 +29,6 @@ const connections = (state = [], action) => {
                 connection => connection.from.boardItemId !== action.id
                               && connection.to.boardItemId !== action.id
             );
-        case QUERY_INPUT_COMMIT:
-            const tableParts = action.query.split('+');
-            if (tableParts.length == 1) {
-                // no joined tables - no connections
-                return state;
-            }
-            break;
         default:
             return state;
     }
@@ -54,6 +48,18 @@ export const getConnectedElemsForBoardItem = (state, boardItemId) => {
 
     return connectedElems.filter(connectedElem => connectedElem.boardItemId === boardItemId);
 };
+
+export const doesConnectionExist = (state, fromBoardItemId, fromColumnName, toBoardItemId, toColumnName) =>
+    !!state.find(
+        connection =>
+            typeof connection.from != 'undefined'
+                && connection.from.boardItemId == fromBoardItemId
+                && connection.from.columnName == fromColumnName
+            &&
+            typeof connection.to != 'undefined'
+                && connection.to.boardItemId == toBoardItemId
+                && connection.to.columnName == toColumnName
+    );
 
 export const getCurrentlyCreatedConnection = (state) =>
     state.find(connection => typeof connection.to == 'undefined');

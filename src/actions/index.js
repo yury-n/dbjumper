@@ -4,7 +4,7 @@ import { uniq } from 'lodash/array';
 import { getBoard, getConnections } from '../reducers';
 import { getBoardItem } from '../reducers/board';
 import { getBoardItemQuery } from '../reducers/boardItem';
-import { getCurrentlyCreatedConnection } from '../reducers/connections';
+import { getCurrentlyCreatedConnection, doesConnectionExist } from '../reducers/connections';
 
 export const BOARD_ADD_ITEM = 'BOARD_ADD_ITEM';
 export const BOARD_REMOVE_ITEM = 'BOARD_REMOVE_ITEM';
@@ -20,6 +20,7 @@ export const TABLES_LISTING_FETCH_COMPLETED = 'TABLES_LISTING_FETCH_COMPLETED';
 export const QUERY_INPUT_CHANGE = 'QUERY_INPUT_CHANGE';
 export const QUERY_INPUT_COMMIT = 'QUERY_INPUT_COMMIT';
 export const QUERY_INPUT_FOCUS = 'QUERY_INPUT_FOCUS';
+export const CONNECTION_CREATE = 'CONNECTION_CREATE';
 export const CONNECTION_CREATE_CANCEL = 'CONNECTION_CREATE_CANCEL';
 export const CONNECTION_CREATE_FROM = 'CONNECTION_CREATE_FROM';
 export const CONNECTION_CREATE_TO = 'CONNECTION_CREATE_TO';
@@ -78,25 +79,88 @@ export const focusQueryInput = (boardItemId) => ({
     boardItemId
 });
 
-export const commitQueryInput = (boardItemId, query = '') => (dispatch, getState) => {
+export const commitQueryInput = (boardItemId, query, withCtrlKeyPressed = false) => (dispatch, getState) => {
+
     dispatch({
         type: QUERY_INPUT_COMMIT
     });
-    if (boardItemId === null) { // committed from FloatingQueryInput
 
-        let toBoardItemId = v4();
-        const state = getState();
-        const connection = getCurrentlyCreatedConnection(getConnections(state));
-        const values = connection.from.values;
-        const [tableName, columnName] = query.split('.');
-        dispatch(addBoardItemWithId(toBoardItemId, query + '=' + uniq(values).join(',')));
-        dispatch(createConnectionTo(toBoardItemId, columnName, values));
+    if (boardItemId === null) {
+        // committed from FloatingQueryInput
+        // create a new connection
 
-        return fetchTableData(toBoardItemId)(dispatch, getState);
-    } else {
-        if (query.slice(-1) == '#') {
-            return fetchTableMeta(boardItemId)(dispatch, getState);
+        const [connectToTableName, connectToColumnName] = query.split('.');
+
+        const connection = getCurrentlyCreatedConnection(getConnections(getState()));
+        const fromBoardItemId = connection.from.boardItemId;
+        const fromColumnName = connection.from.columnName;
+        const fromValues = connection.from.values;
+
+        if (!withCtrlKeyPressed
+            || fromColumnName.includes('.')) { // currently we don't support inline joins for already joined tables
+
+            // connect as a new board item
+            const toBoardItemId = v4();
+            dispatch(addBoardItemWithId(toBoardItemId, query + '=' + uniq(fromValues).join(',')));
+            dispatch(createConnectionTo(toBoardItemId, connectToColumnName, fromValues));
+
+            return fetchTableData(toBoardItemId)(dispatch, getState);
+
         } else {
+
+            // connect on the same board item
+            const board = getBoard(getState());
+            const boardItem = getBoardItem(board, fromBoardItemId);
+            const query = getBoardItemQuery(boardItem);
+
+            let appendToQuery = `+${connectToTableName}(${fromColumnName}=${connectToColumnName})`;
+
+            dispatch(changeQueryInput(fromBoardItemId, query + appendToQuery));
+            dispatch(createConnectionTo(
+                fromBoardItemId,
+                `${connectToTableName}.${connectToColumnName}`
+            ));
+
+            return fetchTableData(fromBoardItemId)(dispatch, getState);
+        }
+
+    } else {
+
+        if (query.slice(-1) == '#') {
+
+            return fetchTableMeta(boardItemId)(dispatch, getState);
+
+        } else {
+
+            const tableParts = query.split('+');
+
+            if (tableParts.length > 1) {
+
+                const connections = getConnections(getState());
+
+                const joinedTableParts = tableParts.slice(1);
+                joinedTableParts.forEach(joinedTablePart => {
+                    // +user(userid=id) --
+                    // what goes before '(' is the joined table name
+                    let table = joinedTablePart.split('(')[0];
+
+                    // what's inside the parest is the join by part
+                    let joinBy = joinedTablePart.slice(
+                        joinedTablePart.indexOf('(') + 1,
+                        joinedTablePart.indexOf(')')
+                    );
+                    let [firstTableKey, joinedTableKey] = joinBy.split('=');
+                    if (typeof joinedTableKey == 'undefined') {
+                        joinedTableKey = firstTableKey;
+                    }
+                    joinedTableKey = table + '.' + joinedTableKey;
+
+                    if (!doesConnectionExist(connections, boardItemId, firstTableKey, boardItemId, joinedTableKey)) {
+                        dispatch(createConnection(boardItemId, firstTableKey, boardItemId, joinedTableKey));
+                    }
+                });
+            }
+
             return fetchTableData(boardItemId)(dispatch, getState);   
         }
     }
@@ -135,6 +199,15 @@ const _getNextConnectionColor = () => {
     return nextColor;
 };
 
+export const createConnection = (fromBoardItemId, fromColumnName, toBoardItemId, toColumnName) => ({
+    type: CONNECTION_CREATE,
+    color: _getNextConnectionColor(),
+    fromBoardItemId,
+    fromColumnName,
+    toBoardItemId,
+    toColumnName
+});
+
 export const createConnectionFrom = (boardItemId, { columnName, values, boundingRect }) => ({
     type: CONNECTION_CREATE_FROM,
     color: _getNextConnectionColor(),
@@ -151,7 +224,7 @@ export const cancelConnectionCreation = () => {
     }
 };
 
-export const createConnectionTo = (boardItemId, columnName, values) => ({
+export const createConnectionTo = (boardItemId, columnName, values = []) => ({
     type: CONNECTION_CREATE_TO,
     boardItemId,
     columnName,

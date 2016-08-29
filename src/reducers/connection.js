@@ -1,4 +1,5 @@
 import {
+    CONNECTION_CREATE,
     CONNECTION_CREATE_FROM,
     CONNECTION_CREATE_TO
 } from '../actions';
@@ -6,6 +7,20 @@ import {
 const connection = (state = {}, action) => {
 
     switch (action.type) {
+        case CONNECTION_CREATE:
+            return {
+                color: action.color,
+                from: {
+                    boardItemId: action.fromBoardItemId,
+                    columnName: action.fromColumnName,
+                    values: []
+                },
+                to: {
+                    boardItemId: action.toBoardItemId,
+                    columnName: action.toColumnName,
+                    values: []
+                }
+            };
         case CONNECTION_CREATE_FROM:
             return {
                 color: action.color,

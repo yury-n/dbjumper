@@ -4,6 +4,7 @@
     position: relative;
     border-bottom: 1px #e3e1de solid;
     padding: 15px 25px;
+    overflow: auto;
 }
 
 .board-item .close-button {

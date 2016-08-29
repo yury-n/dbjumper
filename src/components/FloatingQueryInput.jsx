@@ -8,6 +8,12 @@ import { commitQueryInput, changeQueryInput, cancelConnectionCreation } from '..
 
 class FloatingQueryInput extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.handleCommit = this.handleCommit.bind(this);
+    }
+
     componentWillReceiveProps(nextProps) {
         const { query: nextQuery } = nextProps;
         const { query: oldQuery, changeQueryInput } = this.props;
@@ -49,11 +55,14 @@ class FloatingQueryInput extends Component {
         floatingQueryInput.style.top = top + 'px';
     }
 
+    handleCommit(query, event) {
+        const { commitQueryInput } = this.props;
+        const withCtrlKeyPressed = event.metaKey || event.ctrlKey;
+        commitQueryInput(null, query, withCtrlKeyPressed);
+    }
+
     render() {
-        const {
-            query, visible,
-            commitQueryInput, changeQueryInput, cancelConnectionCreation
-        } = this.props;
+        const { query, visible, changeQueryInput, cancelConnectionCreation } = this.props;
 
         if (!visible) {
             return null;
@@ -69,7 +78,7 @@ class FloatingQueryInput extends Component {
                             }
                             onClickHandler={() => {}}
                             onBlurHandler={cancelConnectionCreation}
-                            onCommitHandler={(query) => commitQueryInput(null, query)} />
+                            onCommitHandler={this.handleCommit} />
                 <CloseButton onClickHandler={cancelConnectionCreation} />
             </div>
         );
