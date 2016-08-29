@@ -4,7 +4,7 @@ import {
     SUGGESTIONS_USE
 } from '../actions';
 
-import { findNearestQuerySeparator } from '../utils';
+import { findNearestQuerySeparator, findNearestOccurrence } from '../utils';
 
 const _emptyState = () => {
     return {'items': [], 'separatorIndex': -1};
@@ -57,14 +57,51 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
                     {items: matchedTableNames, separatorIndex: -1}
                 );
 
-            } else if (['.', ';', '('].includes(separatorLeft.separator)) {
+            } else if (['.', ';', '(', '='].includes(separatorLeft.separator)) {
 
                 const inputtedColumnName = query.slice(
                     separatorLeft.offset + 1,
                     separatorRight.offset ? separatorRight.offset : query.length
                 );
 
-                const inputtedTable = query.split('.')[0];
+                const firstTable = query.split('.')[0];
+
+                let inputtedTable;
+
+                if (separatorLeft.separator == '(') {
+                    // inputting join_by part
+                    // on the first place is the key to use from the first table
+                    inputtedTable = firstTable;
+                } else if (separatorLeft.separator == '=') {
+                    // either filter value input
+                    // or second key of join_by
+                    const nearestParent = findNearestOccurrence(['(', ')'], query, cursorPosition, 'left');
+                    if (nearestParent.occurrence == '(') {
+                        // second key of join_by
+                        inputtedTable = query.slice(
+                            findNearestOccurrence('+', query, cursorPosition, 'left').offset + 1,
+                            nearestParent.offset
+                        );
+                    } else {
+                        // filter value input
+                        return _emptyState();
+                    }
+                } else {
+                    // otherwise it's '.' or ';'
+                    // which could go either after the first or the joined table
+                    const nearestPlus = findNearestOccurrence('+', query, cursorPosition, 'left');
+                    if (nearestPlus.offset === null) {
+                        // no joined tables
+                        inputtedTable = firstTable;
+                    } else {
+                        const nearestLeftParent = findNearestOccurrence('(', query, nearestPlus.offset, 'right');
+                        if (nearestLeftParent.offset === null) {
+                            return _emptyState();
+                        }
+                        inputtedTable = query.slice(nearestPlus.offset + 1, nearestLeftParent.offset);
+                    }
+                }
+
                 const suggestionSourceForInputtedTable = suggestionSourceState[inputtedTable];
                 if (typeof suggestionSourceForInputtedTable == 'undefined') {
                     return _emptyState();

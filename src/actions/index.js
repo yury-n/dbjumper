@@ -58,13 +58,20 @@ export const removeBoardItem = (id) => ({
  */
 
 // boardItemId can be null if it's a floating query input
-export const changeQueryInput = (boardItemId, query, inputBoundingRect, cursorPosition) => ({
-    type: QUERY_INPUT_CHANGE,
-    boardItemId,
-    query,
-    inputBoundingRect,
-    cursorPosition
-});
+export const changeQueryInput = (boardItemId, query, inputBoundingRect, cursorPosition) => (dispatch, getState) => {
+    const afterHashSign = query.split('#')[1];
+    if (typeof(afterHashSign) != 'undefined' && afterHashSign.length) {
+        // not allowed to input anything after '#'
+        return;
+    }
+    dispatch({
+        type: QUERY_INPUT_CHANGE,
+        boardItemId,
+        query,
+        inputBoundingRect,
+        cursorPosition
+    });
+};
 
 export const focusQueryInput = (boardItemId) => ({
     type: QUERY_INPUT_FOCUS,

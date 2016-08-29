@@ -4,7 +4,8 @@ import {
     BOARD_REMOVE_ITEM,
     CONNECTION_CREATE_FROM,
     CONNECTION_CREATE_TO,
-    CONNECTION_CREATE_CANCEL
+    CONNECTION_CREATE_CANCEL,
+    QUERY_INPUT_COMMIT
 } from '../actions';
 
 const connections = (state = [], action) => {
@@ -27,6 +28,13 @@ const connections = (state = [], action) => {
                 connection => connection.from.boardItemId !== action.id
                               && connection.to.boardItemId !== action.id
             );
+        case QUERY_INPUT_COMMIT:
+            const tableParts = action.query.split('+');
+            if (tableParts.length == 1) {
+                // no joined tables - no connections
+                return state;
+            }
+            break;
         default:
             return state;
     }
