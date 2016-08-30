@@ -96,7 +96,7 @@ class ResultsTable extends Component {
         } else {
             // expand
             const { expandedTDs } = this.state;
-            this.setState({expandedTDs: [...expandedTDs, ...{columnName, rowIndex}]});
+            this.setState({expandedTDs: [...expandedTDs, {columnName, rowIndex}]});
         }
     }
 

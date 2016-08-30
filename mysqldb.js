@@ -75,7 +75,7 @@ export const getTableData = (con, done, error, query) => {
         });
 
         if (!existingTables.includes(requestedTable)) {
-            return error('Invalid table name.');
+            return error(`Invalid table name '${requestedTable}'.`);
         }
 
         let dbQuery = 'SELECT * FROM ' + requestedTable;
@@ -114,7 +114,7 @@ export const getTableData = (con, done, error, query) => {
                     let [ key, value ] = filteringPair.split('=');
                     if (!existingColumns.includes(key)) {
                         filteringInvalid = true;
-                        return error('Invalid column name.');
+                        return error(`Invalid column name '${key}'.`);
                     }
                     if (typeof value == 'undefined' || value === '') {
                         filteringInvalid = true;

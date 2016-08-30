@@ -5,12 +5,12 @@ const parseJSON = (response) => {
 };
 
 const checkStatus = (response) => {
-    if(response.ok) {
+    if (response.ok) {
         return response;
     } else {
-        var error = new Error(response.statusText)
-        error.response = response
-        throw error
+        var error = new Error(response.statusText);
+        error.response = response;
+        throw error;
     }
 };
 
