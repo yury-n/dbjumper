@@ -19,7 +19,9 @@
 
 .results-table td.expanded {
     white-space: normal;
-    max-width: 400px;
+    overflow: auto;
+    width: auto;
+    max-width: none;
 }
 
 .results-table th.semitransparent,

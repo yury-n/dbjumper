@@ -4,7 +4,8 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import config from './webpack.config.babel';
 import Express from 'express';
 import favicon from 'serve-favicon';
-import * as mysqldb from './mysqldb';
+import * as mysqldb from './server/mysqldb';
+import dotenv from 'dotenv';
 
 const app = new Express();
 const port = 3000;
@@ -14,6 +15,8 @@ app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
     publicPath: config.output.publicPath,
 }));
+
+dotenv.config();
 
 app.use('/static', Express.static(__dirname + '/static'));
 app.use(favicon(__dirname + '/favicon.ico'));
