@@ -113,7 +113,12 @@ export const commitQueryInput = (boardItemId, query, withCtrlKeyPressed = false)
             const boardItem = getBoardItem(board, fromBoardItemId);
             const query = getBoardItemQuery(boardItem);
 
-            let appendToQuery = `+${connectToTableName}(${fromColumnName}=${connectToColumnName})`;
+            let appendToQuery = `+${connectToTableName}`;
+            if (fromColumnName != connectToColumnName) {
+                appendToQuery += `(${fromColumnName}=${connectToColumnName})`;
+            } else {
+                appendToQuery += `(${fromColumnName})`;
+            }
 
             dispatch(changeQueryInput(fromBoardItemId, query + appendToQuery));
             dispatch(createConnectionTo(

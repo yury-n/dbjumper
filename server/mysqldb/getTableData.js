@@ -132,7 +132,7 @@ const getTableData = (con, done, error, query) => {
                 const filterKeys = Object.keys(filters);
                 filterKeys.forEach(key => {
                     const value = filters[key];
-                    if (value.includes(',')) {
+                    if (!value.includes(',')) {
                         dbQuery += `AND ${table}.${key} = ? `;
                         dbArgs.push(value);
                     } else {

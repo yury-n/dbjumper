@@ -1,6 +1,6 @@
 {
   "name": "dbjumper",
-  "version": "1.0.0",
+  "version": "0.5.0",
   "description": "Jump between db tables with ease",
   "main": "index.js",
   "scripts": {
