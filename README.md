@@ -17,14 +17,17 @@ Tab/Enter to select a suggestion. If there's no suggestions, Enter submits the q
 ![alt tag](https://github.com/yury-n/dbjumper/blob/master/demo/filtering.gif)
 
 #### Connections
-(Cmd/Ctrl)+Click on a TD or TH. Tab/Enter to select a suggestion. If there's no suggestions, Enter creates a connection with a specified table as a new board item, Cmd/Cntrl+Enter -- connects it inside the same board item.
+(Cmd/Ctrl)+Click on a TD or TH. Tab/Enter to select a suggestion. If there's no suggestions, Enter creates a connection with a specified table as a new board item, Cmd/Ctrl+Enter -- connects it inside the same board item.
 
 ![alt tag](https://github.com/yury-n/dbjumper/blob/master/demo/connections.gif)
 
 ##### Creating connection from query
-Syntax: +joined_table(initial_table_key=joined_table_key) or +joined_table(key), if they have the same name. This performs left join operation. 
+Syntax: "+joined_table(initial_table_key=joined_table_key)" or "+joined_table(key)", if they have the same name. This performs left join operation. 
 
 ![alt tag](https://github.com/yury-n/dbjumper/blob/master/demo/inline_connections.gif)
+
+#### Table columns info
+Syntax: "table#"
 
 Alt+Click to hide a column.
 
