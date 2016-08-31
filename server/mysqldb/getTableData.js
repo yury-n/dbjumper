@@ -1,3 +1,4 @@
+import { getExistingTables, getExistingColumns } from './utilFuncs';
 
 const getTableData = (con, done, error, query) => {
 
@@ -14,7 +15,7 @@ const getTableData = (con, done, error, query) => {
     const firstTable = firstTableSchema['table'];
     const joinedTablesSchemas = querySchema.slice(1);
 
-    _getExistingTables(con).then(existingTables => {
+    getExistingTables(con).then(existingTables => {
 
         /*
          * REQUESTED TABLES VALIDATION
@@ -34,7 +35,7 @@ const getTableData = (con, done, error, query) => {
         /*
          * FETCH ALL EXISTING COLUMNS FOR THE REQUESTED TABLES
          */
-        _getExistingColumns(con, requestedTables).then(existingColumns => {
+        getExistingColumns(con, requestedTables).then(existingColumns => {
 
             /*
              * VALIDATE COLUMNS USED IN FILTERS
@@ -188,12 +189,12 @@ const _generateQuerySchema = (query) => {
             // matches[3] = 'productname=bottle;status=3';
             table = matches[1];
             joinBy = matches[2] ? matches[2].split('=') : [];
-            filters = matches[3] ? _parseFilterPartIntoAssocArray(matches[3]) : {};
+            filters = matches[3] ? parseFilterPartIntoAssocArray(matches[3]) : {};
         } else {
             // first table in the query
             const parts = tableAndRelatedParts.split('.');
             table = parts[0];
-            filters = parts[1] ? _parseFilterPartIntoAssocArray(parts[1]) : {};
+            filters = parts[1] ? parseFilterPartIntoAssocArray(parts[1]) : {};
         }
         if (joinBy && joinBy.length == 1) {
             // if only one columnname specified in join part
@@ -217,7 +218,7 @@ const _generateQuerySchema = (query) => {
  * into
  * {productname: 'bottle', status: 3}
  */
-const _parseFilterPartIntoAssocArray = (filterPart) => {
+const parseFilterPartIntoAssocArray = (filterPart) => {
 
     const filterPairs = filterPart.split(';');
     const filtersAssoc = {};
@@ -228,49 +229,5 @@ const _parseFilterPartIntoAssocArray = (filterPart) => {
     return filtersAssoc;
 };
 
-const _getExistingTables = (con) => {
-    return new Promise((resolve, reject) => {
-        con.query('SHOW TABLES', (err, rows) => {
-            if (err) {
-                return reject(err);
-            }
-            const existingTables = rows.map(row => {
-                let key = Object.keys(row)[0];
-                return row[key];
-            });
-
-            return resolve(existingTables);
-        });
-    });
-};
-
-const _getExistingColumns = (con, tables) => {
-    return new Promise((resolve, reject) => {
-        con.query(`
-                SELECT
-                    TABLE_NAME,
-                    COLUMN_NAME
-                FROM 
-                    INFORMATION_SCHEMA.COLUMNS 
-                WHERE
-                    TABLE_NAME IN ("` + tables.join('","') + `")
-                    AND TABLE_SCHEMA = "${process.env.DB_DATABASE}"
-            `, (err, rows) => {
-            if (err) {
-                return reject(err);
-            }
-            const existingColumns = {};
-            rows.forEach(row => {
-                const table = row['TABLE_NAME'];
-                const column = row['COLUMN_NAME'];
-                if (typeof existingColumns[table] == 'undefined') {
-                    existingColumns[table] = [];
-                }
-                existingColumns[table].push(column);
-            });
-            return resolve(existingColumns);
-        });
-    });
-};
 
 export default getTableData;

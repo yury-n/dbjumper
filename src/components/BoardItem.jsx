@@ -18,13 +18,13 @@ class BoardItem extends Component {
 
     render() {
         const {
-            id, query, isQueryActive, loading, results, hiddenColumns, connectedElems,
+            id, query, isQueryActive, loading, dataResults, metaResults, connectedElems,
             removeBoardItem,
             changeQueryInput, focusQueryInput, commitQueryInput,
             createConnectionFrom
         } = this.props;
 
-        console.log('loading', loading);
+
 
         return (
             <div className={classnames({
@@ -43,10 +43,12 @@ class BoardItem extends Component {
 
                 <CloseButton onClickHandler={() => removeBoardItem(id)} />
 
-                <ResultsTable rows={results}
-                              hiddenColumns={hiddenColumns}
+                <ResultsTable rows={metaResults} />
+
+                <ResultsTable rows={dataResults}
                               highlightedElems={connectedElems}
                               onCellSelectionClick={cellData => createConnectionFrom(id, cellData)} />
+
             </div>
         );
     }
@@ -56,7 +58,9 @@ BoardItem.propTypes = {
     query: PropTypes.string.isRequired,
     isQueryActive: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    results: PropTypes.array.isRequired,
+    dataResults: PropTypes.array.isRequired,
+    metaResults: PropTypes.array.isRequired,
+
     connectedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,
         columnName: PropTypes.string.isRequired,

@@ -4,7 +4,8 @@ import {
     SUGGESTIONS_USE,
     TABLE_DATA_FETCH,
     TABLE_DATA_FETCH_COMPLETED,
-    TABLE_META_FETCH
+    TABLE_META_FETCH,
+    TABLE_META_FETCH_COMPLETED
 } from '../actions';
 
 const boardItem = (state = {}, action) => {
@@ -14,7 +15,8 @@ const boardItem = (state = {}, action) => {
                 id: action.id,
                 query: action.query,
                 loading: false,
-                results: [],
+                dataResults: [],
+                metaResults: [],
                 hiddenColumns: []
             };
         case QUERY_INPUT_CHANGE:
@@ -32,16 +34,28 @@ const boardItem = (state = {}, action) => {
                        state.query.slice(forQueryPartEnd, state.query.length)
             };
         case TABLE_META_FETCH:
+            return {
+                ...state,
+                dataResults: [],
+                loading: true
+            };
         case TABLE_DATA_FETCH:
             return {
                 ...state,
+                metaResults: [],
                 loading: true
             };
         case TABLE_DATA_FETCH_COMPLETED:
             return {
                 ...state,
                 loading: false,
-                results: action.response
+                dataResults: action.response
+            };
+        case TABLE_META_FETCH_COMPLETED:
+            return {
+                ...state,
+                loading: false,
+                metaResults: action.response
             };
         default:
             return state;

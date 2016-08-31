@@ -4,7 +4,8 @@ import {
     QUERY_INPUT_CHANGE,
     TABLE_DATA_FETCH,
     TABLE_DATA_FETCH_COMPLETED,
-    TABLE_META_FETCH
+    TABLE_META_FETCH,
+    TABLE_META_FETCH_COMPLETED
 } from '../actions';
 
 import boardItem from './boardItem';
@@ -33,6 +34,7 @@ const boardItems = (state = [], action) => {
         case TABLE_META_FETCH:
         case QUERY_INPUT_CHANGE:
         case TABLE_DATA_FETCH_COMPLETED:
+        case TABLE_META_FETCH_COMPLETED:
             // proxy action to the corresponding boardItem
             boardItemIndex = findBoardItemIndex(action.boardItemId);
             let newState = [...state];

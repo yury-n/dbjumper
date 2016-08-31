@@ -103,6 +103,9 @@ class ResultsTable extends Component {
 
     handleCellSelectionClick(event) {
         const { onCellSelectionClick, rows } = this.props;
+        if (typeof onCellSelectionClick == 'undefined') {
+            return;
+        }
         const cell = event.target;
         const columnName = this.getColumnNameForCell(cell);
         const boundingRect = cell.getBoundingClientRect();
@@ -136,6 +139,9 @@ class ResultsTable extends Component {
 
     getTDColor(columnName, value) {
         const { highlightedElems } = this.props;
+        if (typeof highlightedElems == 'undefined') {
+            return null;
+        }
         const highlightedElem = highlightedElems.find(
             hElem => (hElem.columnName == columnName
                         && (!hElem.values.length || hElem.values.includes(value)))
@@ -145,6 +151,9 @@ class ResultsTable extends Component {
 
     getTHColor(columnName) {
         const { highlightedElems, rows } = this.props;
+        if (typeof highlightedElems == 'undefined') {
+            return null;
+        }
         const highlightedElem = highlightedElems.find(
             hElem => (
                 hElem.columnName == columnName
@@ -219,13 +228,12 @@ class ResultsTable extends Component {
 }
 ResultsTable.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hiddenColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
     highlightedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,
         columnName: PropTypes.string.isRequired,
         values: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
     })),
-    onCellSelectionClick: PropTypes.func.isRequired
+    onCellSelectionClick: PropTypes.func
 };
 
 export default ResultsTable;
