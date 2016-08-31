@@ -1,6 +1,7 @@
 import 'styles/boardItem.css';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 import QueryInput from './QueryInput';
 import CloseButton from './buttons/CloseButton';
 import ResultsTable from './ResultsTable';
@@ -17,14 +18,19 @@ class BoardItem extends Component {
 
     render() {
         const {
-            id, query, isQueryActive, results, hiddenColumns, connectedElems,
+            id, query, isQueryActive, loading, results, hiddenColumns, connectedElems,
             removeBoardItem,
             changeQueryInput, focusQueryInput, commitQueryInput,
             createConnectionFrom
         } = this.props;
 
+        console.log('loading', loading);
+
         return (
-            <div className="board-item">
+            <div className={classnames({
+                'board-item': true,
+                'board-item--loading': loading
+            })}>
 
                 <QueryInput onChangeHandler={
                                 ({inputValue, inputBoundingRect, cursorPosition}) =>
@@ -49,6 +55,7 @@ BoardItem.propTypes = {
     id: PropTypes.string.isRequired,
     query: PropTypes.string.isRequired,
     isQueryActive: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
     results: PropTypes.array.isRequired,
     connectedElems: PropTypes.arrayOf(PropTypes.shape({
         color: PropTypes.string.isRequired,

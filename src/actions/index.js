@@ -251,7 +251,8 @@ export const fetchTablesListing = () => (dispatch) => {
 
 export const fetchTableData = (boardItemId) => (dispatch, getState) => {
     dispatch({
-        type: TABLE_DATA_FETCH
+        type: TABLE_DATA_FETCH,
+        boardItemId
     });
     const board = getBoard(getState());
     const boardItem = getBoardItem(board, boardItemId);
@@ -270,7 +271,8 @@ export const fetchTableData = (boardItemId) => (dispatch, getState) => {
 
 export const fetchTableMeta = (boardItemId) => (dispatch, getState) => {
     dispatch({
-        type: TABLE_META_FETCH
+        type: TABLE_META_FETCH,
+        boardItemId
     });
     const board = getBoard(getState());
     const boardItem = getBoardItem(board, boardItemId);
@@ -287,8 +289,3 @@ export const fetchTableMeta = (boardItemId) => (dispatch, getState) => {
         }
     ).catch(error => console.log(error));
 };
-
-/*
-OTHERS
- */
-

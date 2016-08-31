@@ -2,7 +2,9 @@ import {
     BOARD_ADD_ITEM,
     QUERY_INPUT_CHANGE,
     SUGGESTIONS_USE,
-    TABLE_DATA_FETCH_COMPLETED
+    TABLE_DATA_FETCH,
+    TABLE_DATA_FETCH_COMPLETED,
+    TABLE_META_FETCH
 } from '../actions';
 
 const boardItem = (state = {}, action) => {
@@ -11,6 +13,7 @@ const boardItem = (state = {}, action) => {
             return {
                 id: action.id,
                 query: action.query,
+                loading: false,
                 results: [],
                 hiddenColumns: []
             };
@@ -28,9 +31,16 @@ const boardItem = (state = {}, action) => {
                        suggestion +
                        state.query.slice(forQueryPartEnd, state.query.length)
             };
+        case TABLE_META_FETCH:
+        case TABLE_DATA_FETCH:
+            return {
+                ...state,
+                loading: true
+            };
         case TABLE_DATA_FETCH_COMPLETED:
             return {
                 ...state,
+                loading: false,
                 results: action.response
             };
         default:

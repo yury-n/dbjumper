@@ -6,12 +6,12 @@ import { getIndexInParent } from '../utils';
 
 class ResultsTable extends Component {
 
-    mousePointingColumn = null;
-
     shouldComponentUpdate = shouldPureComponentUpdate;
 
     constructor(props) {
         super(props);
+
+        this.mousePointingColumn = null;
 
         this.state = {
             expandedTDs: [],
@@ -78,6 +78,7 @@ class ResultsTable extends Component {
     }
 
     handleMouseLeave() {
+        this.mousePointingColumn = null;
         this.setState({previewHiddenColumn: null});
     }
 

@@ -2,7 +2,9 @@ import {
     BOARD_ADD_ITEM,
     BOARD_REMOVE_ITEM,
     QUERY_INPUT_CHANGE,
-    TABLE_DATA_FETCH_COMPLETED
+    TABLE_DATA_FETCH,
+    TABLE_DATA_FETCH_COMPLETED,
+    TABLE_META_FETCH
 } from '../actions';
 
 import boardItem from './boardItem';
@@ -27,6 +29,8 @@ const boardItems = (state = [], action) => {
                 ...state.slice(0, boardItemIndex),
                 ...state.slice(boardItemIndex + 1, state.length)
             ];
+        case TABLE_DATA_FETCH:
+        case TABLE_META_FETCH:
         case QUERY_INPUT_CHANGE:
         case TABLE_DATA_FETCH_COMPLETED:
             // proxy action to the corresponding boardItem
