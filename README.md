@@ -29,12 +29,13 @@ Syntax: +joined_table(initial_table_key=joined_table_key) or +joined_table(key),
 Alt+Click to hide a column.
 
 #### Not implemented [yet]
+* Relational DBs other than MySQL
 * Filtering by operands other than '='
 * Inline joins using a column from a joined table
-* Paging
+* Pagination
 * Sorting
 
 License
 -------
 
-Licensed under MIT. [Full license here »](LICENSE)
+Licensed under MIT.
