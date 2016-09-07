@@ -24,7 +24,7 @@ const connections = (state = [], action) => {
             return newState;
         }
         case CONNECTION_CREATE_CANCEL:
-            return state.filter(connection => typeof connection.to != 'undefined');
+            return state.filter(connection => typeof connection.to !== 'undefined');
         case BOARD_REMOVE_ITEM:
             return state.filter(
                 connection => connection.from.boardItemId !== action.id
@@ -52,17 +52,17 @@ export const getConnectedElemsForBoardItem = (state, boardItemId) => {
 export const doesConnectionExist = (state, fromBoardItemId, fromColumnName, toBoardItemId, toColumnName) =>
     !!state.find(
         connection =>
-            typeof connection.from != 'undefined'
-                && connection.from.boardItemId == fromBoardItemId
-                && connection.from.columnName == fromColumnName
+            typeof connection.from !== 'undefined'
+                && connection.from.boardItemId === fromBoardItemId
+                && connection.from.columnName === fromColumnName
             &&
-            typeof connection.to != 'undefined'
-                && connection.to.boardItemId == toBoardItemId
-                && connection.to.columnName == toColumnName
+            typeof connection.to !== 'undefined'
+                && connection.to.boardItemId === toBoardItemId
+                && connection.to.columnName === toColumnName
     );
 
 export const getCurrentlyCreatedConnection = (state) =>
-    state.find(connection => typeof connection.to == 'undefined');
+    state.find(connection => typeof connection.to === 'undefined');
 
 export const getCurrentlyCreatedConnectionIndex = (state) =>
-    state.findIndex(connection => typeof connection.to == 'undefined');
+    state.findIndex(connection => typeof connection.to === 'undefined');
