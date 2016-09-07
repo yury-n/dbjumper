@@ -38,7 +38,7 @@ const suggestionsSourceReducer = (state = [], action) => {
 const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
 
     switch (action.type) {
-        case QUERY_INPUT_CHANGE:
+        case QUERY_INPUT_CHANGE: {
             const { query, inputBoundingRect, cursorPosition } = action;
 
             if (typeof inputBoundingRect == 'undefined') {
@@ -62,6 +62,7 @@ const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
                 left: inputBoundingRect.left + shiftLeft,
                 top: inputBoundingRect.bottom
             };
+        }
         default:
             return state;
     }
@@ -70,7 +71,7 @@ const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
 // the part we'll replace with our suggestion, if selected
 const forQueryPartReducer = (state = [0, 0], action) => {
     switch (action.type) {
-        case QUERY_INPUT_CHANGE:
+        case QUERY_INPUT_CHANGE: {
             const { query, cursorPosition } = action;
             const separatorLeft = findNearestQuerySeparator(query, cursorPosition, 'left');
             const separatorRight = findNearestQuerySeparator(query, cursorPosition, 'right');
@@ -78,6 +79,7 @@ const forQueryPartReducer = (state = [0, 0], action) => {
                 separatorLeft.offset ? separatorLeft.offset + 1 : 0,
                 separatorRight.offset || query.length
             ];
+        }
         default:
             return state;
     }

@@ -24,7 +24,7 @@ const boardItem = (state = {}, action) => {
                 ...state,
                 query: action.query
             };
-        case SUGGESTIONS_USE:
+        case SUGGESTIONS_USE: {
             const { suggestion, forQueryPart } = action;
             const [ forQueryPartStart, forQueryPartEnd ] = forQueryPart;
             return {
@@ -33,6 +33,7 @@ const boardItem = (state = {}, action) => {
                        suggestion +
                        state.query.slice(forQueryPartEnd, state.query.length)
             };
+        }
         case TABLE_META_FETCH:
             return {
                 ...state,

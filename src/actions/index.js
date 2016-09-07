@@ -29,8 +29,6 @@ export const CONNECTION_CREATE_TO = 'CONNECTION_CREATE_TO';
  BOARD_*
  */
 
-export const addBoardItem = (...args) => addBoardItemWithId(v4(), ...args);
-
 export const addBoardItemWithId = (id, query = '', clearBoard = false, activate = true) => ({
     type: BOARD_ADD_ITEM,
     id,
@@ -38,6 +36,8 @@ export const addBoardItemWithId = (id, query = '', clearBoard = false, activate 
     activate,
     clearBoard
 });
+
+export const addBoardItem = (...args) => addBoardItemWithId(v4(), ...args);
 
 export const selectTableFromSidebar = (tablename) => (dispatch, getState) => {
     const boardItemId = v4();
@@ -59,7 +59,7 @@ export const removeBoardItem = (id) => ({
  */
 
 // boardItemId can be null if it's a floating query input
-export const changeQueryInput = (boardItemId, query, inputBoundingRect, cursorPosition) => (dispatch, getState) => {
+export const changeQueryInput = (boardItemId, query, inputBoundingRect, cursorPosition) => (dispatch) => {
     const afterHashSign = query.split('#')[1];
     if (typeof(afterHashSign) != 'undefined' && afterHashSign.length) {
         // not allowed to input anything after '#'
@@ -166,7 +166,7 @@ export const commitQueryInput = (boardItemId, query, withCtrlKeyPressed = false)
                 });
             }
 
-            return fetchTableData(boardItemId)(dispatch, getState);   
+            return fetchTableData(boardItemId)(dispatch, getState);
         }
     }
 };
@@ -251,7 +251,7 @@ export const fetchTablesListing = () => (dispatch) => {
                 response
             });
         }
-    ).catch(error => console.log(error));
+    ).catch(alert);
 };
 
 export const fetchTableData = (boardItemId) => (dispatch, getState) => {
@@ -271,7 +271,7 @@ export const fetchTableData = (boardItemId) => (dispatch, getState) => {
                 response
             });
         }
-    ).catch(error => console.log(error));
+    ).catch(alert);
 };
 
 export const fetchTableMeta = (boardItemId) => (dispatch, getState) => {
@@ -292,5 +292,5 @@ export const fetchTableMeta = (boardItemId) => (dispatch, getState) => {
                 response
             });
         }
-    ).catch(error => console.log(error));
+    ).catch(alert);
 };

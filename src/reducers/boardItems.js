@@ -12,7 +12,6 @@ import boardItem from './boardItem';
 
 const boardItems = (state = [], action) => {
 
-    let boardItemIndex;
     const findBoardItemIndex = (id) => state.findIndex(item => item.id === id);
 
     switch (action.type) {
@@ -24,22 +23,24 @@ const boardItems = (state = [], action) => {
                 ...state,
                 boardItem(undefined, action)
             ];
-        case BOARD_REMOVE_ITEM:
-            boardItemIndex = findBoardItemIndex(action.id);
+        case BOARD_REMOVE_ITEM: {
+            const boardItemIndex = findBoardItemIndex(action.id);
             return [
                 ...state.slice(0, boardItemIndex),
                 ...state.slice(boardItemIndex + 1, state.length)
             ];
+        }
         case TABLE_DATA_FETCH:
         case TABLE_META_FETCH:
         case QUERY_INPUT_CHANGE:
         case TABLE_DATA_FETCH_COMPLETED:
-        case TABLE_META_FETCH_COMPLETED:
+        case TABLE_META_FETCH_COMPLETED: {
             // proxy action to the corresponding boardItem
-            boardItemIndex = findBoardItemIndex(action.boardItemId);
+            const boardItemIndex = findBoardItemIndex(action.boardItemId);
             let newState = [...state];
             newState[boardItemIndex] = boardItem(state[boardItemIndex], action);
             return newState;
+        }
         default:
             return state;
     }

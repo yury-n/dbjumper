@@ -16,12 +16,13 @@ const connections = (state = [], action) => {
                 ...state,
                 connection(undefined, action)
             ];
-        case CONNECTION_CREATE_TO:
+        case CONNECTION_CREATE_TO: {
             // proxy action to the corresponding connection
             const connectionIndex = getCurrentlyCreatedConnectionIndex(state);
             let newState = [...state];
             newState[connectionIndex] = connection(state[connectionIndex], action);
             return newState;
+        }
         case CONNECTION_CREATE_CANCEL:
             return state.filter(connection => typeof connection.to != 'undefined');
         case BOARD_REMOVE_ITEM:
@@ -32,7 +33,6 @@ const connections = (state = [], action) => {
         default:
             return state;
     }
-    return state;
 };
 
 export default connections;
