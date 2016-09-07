@@ -4,12 +4,14 @@ Navigate relational DBs with ease.
 
 ### Installation
 
-1. Cd into the root dir of the repository
-2. Run `cp .env.example .env` 
-3. Fill .env file with your DB credentials
-4. Run `npm install`
-5. Run `npm start`
-6. Open http://localhost:3000/
+1. Make sure you have `git`, `node`, and `npm` installed.
+2. Clone this repository locally.
+3. Cd into the root dir of the repository.
+4. Run `cp .env.example .env`.
+5. Fill `.env` file with your DB credentials.
+6. Run `npm install`.
+7. Run `npm start`.
+8. Open `http://localhost:3000/` in your browser.
 
 #### Filtering
 Tab/Enter to select a suggestion. If there's no suggestions, Enter submits the query, Tab creates a new query input.
