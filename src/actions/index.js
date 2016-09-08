@@ -20,7 +20,7 @@ export const TABLES_LISTING_FETCH_COMPLETED = 'TABLES_LISTING_FETCH_COMPLETED';
 export const QUERY_INPUT_CHANGE = 'QUERY_INPUT_CHANGE';
 export const QUERY_INPUT_COMMIT = 'QUERY_INPUT_COMMIT';
 export const QUERY_INPUT_FOCUS = 'QUERY_INPUT_FOCUS';
-export const CONNECTION_CREATE = 'CONNECTION_CREATE';
+export const CONNECTION_FULL_CREATE = 'CONNECTION_FULL_CREATE';
 export const CONNECTION_CREATE_CANCEL = 'CONNECTION_CREATE_CANCEL';
 export const CONNECTION_CREATE_FROM = 'CONNECTION_CREATE_FROM';
 export const CONNECTION_CREATE_TO = 'CONNECTION_CREATE_TO';
@@ -205,7 +205,7 @@ const _getNextConnectionColor = () => {
 };
 
 export const createConnection = (fromBoardItemId, fromColumnName, toBoardItemId, toColumnName) => ({
-    type: CONNECTION_CREATE,
+    type: CONNECTION_FULL_CREATE,
     color: _getNextConnectionColor(),
     fromBoardItemId,
     fromColumnName,

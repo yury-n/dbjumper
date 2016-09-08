@@ -1,5 +1,5 @@
 import {
-    CONNECTION_CREATE,
+    CONNECTION_FULL_CREATE,
     CONNECTION_CREATE_FROM,
     CONNECTION_CREATE_TO
 } from '../actions';
@@ -7,7 +7,7 @@ import {
 const connection = (state = {}, action) => {
 
     switch (action.type) {
-        case CONNECTION_CREATE:
+        case CONNECTION_FULL_CREATE:
             return {
                 color: action.color,
                 from: {

@@ -2,7 +2,7 @@ import connection, { getConnectedElems } from './connection';
 
 import {
     BOARD_REMOVE_ITEM,
-    CONNECTION_CREATE,
+    CONNECTION_FULL_CREATE,
     CONNECTION_CREATE_FROM,
     CONNECTION_CREATE_TO,
     CONNECTION_CREATE_CANCEL
@@ -10,7 +10,7 @@ import {
 
 const connections = (state = [], action) => {
     switch (action.type) {
-        case CONNECTION_CREATE:
+        case CONNECTION_FULL_CREATE:
         case CONNECTION_CREATE_FROM:
             return [
                 ...state,
