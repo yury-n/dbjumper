@@ -23,7 +23,7 @@ class FloatingQueryInput extends Component {
         // floating query input appends '.' when a table is picked from suggestions
         // if that's the case we want to trigger QUERY_INPUT_CHANGE event
         // to autosuggest columns right after we used table autosuggest
-        const tableWasPickedFromAutosuggest = (nextQuery.slice(-1) == '.'
+        const tableWasPickedFromAutosuggest = (nextQuery.slice(-1) === '.'
                                                 // and make sure it wasn't just typed in
                                                 && nextQuery.length - oldQuery.length > 1);
         if (tableWasPickedFromAutosuggest) {

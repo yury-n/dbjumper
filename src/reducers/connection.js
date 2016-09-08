@@ -47,12 +47,12 @@ const connection = (state = {}, action) => {
 export default connection;
 
 export const getConnectedElems = (state) => {
-    if (typeof state.from == 'undefined') {
+    if (typeof state.from === 'undefined') {
         return [];
     }
     const color = state.color;
     let connectedElems = [{...state.from, color}];
-    if (typeof state.to != 'undefined') {
+    if (typeof state.to !== 'undefined') {
         connectedElems.push({...state.to, color});
     }
     return connectedElems;

@@ -48,7 +48,7 @@ const board = (state = {}, action) => {
     switch (action.type) {
         case SUGGESTIONS_USE:
             state.boardItems = state.boardItems.map(item => {
-                if (item.id == state.activeQueryBoardItemId) {
+                if (item.id === state.activeQueryBoardItemId) {
                     return boardItem(item, action);
                 }
                 return item;

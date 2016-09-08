@@ -11,7 +11,7 @@ const _emptyState = () => {
 };
 
 const _ifNotOneExactMatchToInput = (input, suggestionsState) => {
-    if (suggestionsState.items.length == 1 && input == suggestionsState.items[0]) {
+    if (suggestionsState.items.length === 1 && input === suggestionsState.items[0]) {
         // there is no reason to suggest something that's already been fully typed in
         return _emptyState();
     } else {
@@ -33,14 +33,14 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
             const separatorRight = findNearestQuerySeparator(query, cursorPosition, 'right');
 
             // sanity check
-            if (separatorLeft.separator == ';'
-                && (query.indexOf('.') == -1 || query.indexOf('.') > separatorLeft.offset)) {
+            if (separatorLeft.separator === ';'
+                && (query.indexOf('.') === -1 || query.indexOf('.') > separatorLeft.offset)) {
                 // incorrect query -- you can use ';' to add filtering by another column
                 // after one filter has been applied with "table.column=value" syntax
                 return _emptyState();
             }
 
-            if (separatorLeft.separator === null || separatorLeft.separator == '+') {
+            if (separatorLeft.separator === null || separatorLeft.separator === '+') {
 
                 const inputtedTableName = query.slice(
                     separatorLeft.offset ? separatorLeft.offset + 1 : 0,
@@ -68,15 +68,15 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
 
                 let inputtedTable;
 
-                if (separatorLeft.separator == '(') {
+                if (separatorLeft.separator === '(') {
                     // inputting join_by part
                     // on the first place is the key to use from the first table
                     inputtedTable = firstTable;
-                } else if (separatorLeft.separator == '=') {
+                } else if (separatorLeft.separator === '=') {
                     // either filter value input
                     // or second key of join_by
                     const nearestParent = findNearestOccurrence(['(', ')'], query, cursorPosition, 'left');
-                    if (nearestParent.occurrence == '(') {
+                    if (nearestParent.occurrence === '(') {
                         // second key of join_by
                         inputtedTable = query.slice(
                             findNearestOccurrence('+', query, cursorPosition, 'left').offset + 1,
@@ -103,7 +103,7 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
                 }
 
                 const suggestionSourceForInputtedTable = suggestionSourceState[inputtedTable];
-                if (typeof suggestionSourceForInputtedTable == 'undefined') {
+                if (typeof suggestionSourceForInputtedTable === 'undefined') {
                     return _emptyState();
                 }
 
@@ -121,12 +121,12 @@ const suggestionsReducer = (suggestionsState = {'items': [], 'separatorIndex': -
                             columnname => columnname.indexOf(inputtedColumnName) === 0
                         )
                     ];
-                    if (columnType == 'indexed' && matchedColumnNames.length) {
+                    if (columnType === 'indexed' && matchedColumnNames.length) {
                         // separator between indexed and non-indexed columns
                         separatorIndex = (matchedColumnNames.length - 1);
                     }
                 });
-                if (matchedColumnNames[matchedColumnNames.length - 1] == separatorIndex) {
+                if (matchedColumnNames[matchedColumnNames.length - 1] === separatorIndex) {
                     // this would be the case, if all matches are indexed columns
                     // no need to have a separator
                     separatorIndex = -1;

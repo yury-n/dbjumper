@@ -61,7 +61,7 @@ export const removeBoardItem = (id) => ({
 // boardItemId can be null if it's a floating query input
 export const changeQueryInput = (boardItemId, query, inputBoundingRect, cursorPosition) => (dispatch) => {
     const afterHashSign = query.split('#')[1];
-    if (typeof(afterHashSign) != 'undefined' && afterHashSign.length) {
+    if (typeof(afterHashSign) !== 'undefined' && afterHashSign.length) {
         // not allowed to input anything after '#'
         return;
     }
@@ -114,7 +114,7 @@ export const commitQueryInput = (boardItemId, query, withCtrlKeyPressed = false)
             const query = getBoardItemQuery(boardItem);
 
             let appendToQuery = `+${connectToTableName}`;
-            if (fromColumnName != connectToColumnName) {
+            if (fromColumnName !== connectToColumnName) {
                 appendToQuery += `(${fromColumnName}=${connectToColumnName})`;
             } else {
                 appendToQuery += `(${fromColumnName})`;
@@ -131,7 +131,7 @@ export const commitQueryInput = (boardItemId, query, withCtrlKeyPressed = false)
 
     } else {
 
-        if (query.slice(-1) == '#') {
+        if (query.slice(-1) === '#') {
 
             return fetchTableMeta(boardItemId)(dispatch, getState);
 
@@ -149,13 +149,13 @@ export const commitQueryInput = (boardItemId, query, withCtrlKeyPressed = false)
                     // what goes before '(' is the joined table name
                     let table = joinedTablePart.split('(')[0];
 
-                    // what's inside the parest is the join by part
+                    // what's inside the parents is the join by part
                     let joinBy = joinedTablePart.slice(
                         joinedTablePart.indexOf('(') + 1,
                         joinedTablePart.indexOf(')')
                     );
                     let [firstTableKey, joinedTableKey] = joinBy.split('=');
-                    if (typeof joinedTableKey == 'undefined') {
+                    if (typeof joinedTableKey === 'undefined') {
                         joinedTableKey = firstTableKey;
                     }
                     joinedTableKey = table + '.' + joinedTableKey;

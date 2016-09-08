@@ -43,7 +43,7 @@ class QueryInput extends Component {
         // a query is committed with Enter
         // when there're suggestions hitting Enter should use a suggestion instead of
         // committing the query
-        if (event.keyCode == '13' && !hasSuggestions) {
+        if (event.keyCode === '13' && !hasSuggestions) {
             const inputValue = event.target.value;
             onCommitHandler(inputValue, event);
         }

@@ -41,7 +41,7 @@ const componentPositionReducer = (state = {top: 0, left: 0}, action) => {
         case QUERY_INPUT_CHANGE: {
             const { query, inputBoundingRect, cursorPosition } = action;
 
-            if (typeof inputBoundingRect == 'undefined') {
+            if (typeof inputBoundingRect === 'undefined') {
                 return state;
             }
 

@@ -44,19 +44,19 @@ class SuggestionList extends Component {
 
         const selectedSuggestion = suggestions.items[selectedIndex];
 
-        if (event.keyCode == '38') { // up
+        if (event.keyCode === '38') { // up
             changeSelectedSuggestion(selectedIndex - 1);
             event.preventDefault();
-        } else if (event.keyCode == '40') { // down
+        } else if (event.keyCode === '40') { // down
             changeSelectedSuggestion(selectedIndex + 1);
             event.preventDefault();
-        } else if (event.keyCode == '13') { // enter
+        } else if (event.keyCode === '13') { // enter
             useSuggestion(selectedSuggestion, forQueryPart);
             event.preventDefault();
-        } else if (event.keyCode == '9') { // tab
+        } else if (event.keyCode === '9') { // tab
             useSuggestion(selectedSuggestion, forQueryPart);
             event.preventDefault();
-        } else if (event.keyCode == '27') { // esc
+        } else if (event.keyCode === '27') { // esc
             hideSuggestions();
         }
     }
@@ -82,8 +82,8 @@ class SuggestionList extends Component {
                 {suggestionItems.map((suggestion, index) => (
                     <li key={index}
                         className={classnames({
-                            "active": index == selectedIndex,
-                            'with-separator': index == separatorIndex
+                            "active": index === selectedIndex,
+                            'with-separator': index === separatorIndex
                         })}
                         onMouseOver={() => {changeSelectedSuggestion(index)}}
                         onClick={(e) => {e.stopPropagation();useSuggestion(suggestion, forQueryPart);}}>

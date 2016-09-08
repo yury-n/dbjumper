@@ -41,14 +41,14 @@ export const findNearestOccurrence = (needle, haystack, offset, direction) => {
 
     const needles = Array.isArray(needle) ? needle: [needle];
 
-    if ((direction == 'left' && offset === 0)  // nothing to the left
-        || (direction == 'right' && offset === haystack.length)) { // nothing on the right
+    if ((direction === 'left' && offset === 0)  // nothing to the left
+        || (direction === 'right' && offset === haystack.length)) { // nothing on the right
 
         return {separator: null, offset: null};
     }
 
     let queryPartFromOffset;
-    if (direction == 'left') {
+    if (direction === 'left') {
         queryPartFromOffset = haystack.slice(0, offset);
     } else {  // right
         queryPartFromOffset = haystack.slice(offset, haystack.length);
@@ -57,7 +57,7 @@ export const findNearestOccurrence = (needle, haystack, offset, direction) => {
     let nearestOccurrence = null;
     let nearestOccurrenceOffset = null;
     needles.forEach(needle => {
-        let indexOfFunc = (direction == 'left' ? 'lastIndexOf' : 'indexOf');
+        let indexOfFunc = (direction === 'left' ? 'lastIndexOf' : 'indexOf');
         let currentSeparatorOffset = queryPartFromOffset[indexOfFunc](needle);
         if (currentSeparatorOffset === -1) {
             return; // to the next item to lookup for
@@ -67,13 +67,13 @@ export const findNearestOccurrence = (needle, haystack, offset, direction) => {
             nearestOccurrenceOffset = currentSeparatorOffset;
             return; // to the next item to lookup for
         }
-        if ((direction == 'left' && currentSeparatorOffset > nearestOccurrenceOffset)
-            || (direction == 'right' && currentSeparatorOffset < nearestOccurrenceOffset)) {
+        if ((direction === 'left' && currentSeparatorOffset > nearestOccurrenceOffset)
+            || (direction === 'right' && currentSeparatorOffset < nearestOccurrenceOffset)) {
             nearestOccurrence = needle;
             nearestOccurrenceOffset = currentSeparatorOffset;
         }
     });
-    if (nearestOccurrence !== null && direction == 'right') {
+    if (nearestOccurrence !== null && direction === 'right') {
         nearestOccurrenceOffset += offset;
     }
 

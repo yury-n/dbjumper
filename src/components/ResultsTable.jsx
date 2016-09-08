@@ -103,14 +103,14 @@ class ResultsTable extends Component {
 
     handleCellSelectionClick(event) {
         const { onCellSelectionClick, rows } = this.props;
-        if (typeof onCellSelectionClick == 'undefined') {
+        if (typeof onCellSelectionClick === 'undefined') {
             return;
         }
         const cell = event.target;
         const columnName = this.getColumnNameForCell(cell);
         const boundingRect = cell.getBoundingClientRect();
         const values = [];
-        if (cell.tagName == 'TH') {
+        if (cell.tagName === 'TH') {
             rows.forEach(row => values.push(row[columnName].toString()));
         } else {
             values.push(cell.innerText);
@@ -139,11 +139,11 @@ class ResultsTable extends Component {
 
     getTDColor(columnName, value) {
         const { highlightedElems } = this.props;
-        if (typeof highlightedElems == 'undefined') {
+        if (typeof highlightedElems === 'undefined') {
             return null;
         }
         const highlightedElem = highlightedElems.find(
-            hElem => (hElem.columnName == columnName
+            hElem => (hElem.columnName === columnName
                         && (!hElem.values.length || hElem.values.includes(value)))
         );
         return highlightedElem ? highlightedElem.color : null;
@@ -151,15 +151,15 @@ class ResultsTable extends Component {
 
     getTHColor(columnName) {
         const { highlightedElems, rows } = this.props;
-        if (typeof highlightedElems == 'undefined') {
+        if (typeof highlightedElems === 'undefined') {
             return null;
         }
         const highlightedElem = highlightedElems.find(
             hElem => (
-                hElem.columnName == columnName
+                hElem.columnName === columnName
                 // highlight column th if all values in it are involved
                 // or values field is empty
-                && (!hElem.values.length || hElem.values.length == rows.length)
+                && (!hElem.values.length || hElem.values.length === rows.length)
                 && rows.length > 1
             )
         );
