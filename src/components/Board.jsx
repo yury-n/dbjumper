@@ -24,7 +24,7 @@ class Board extends Component{
 
         const { addBoardItem, inputQueryHasSuggestions } = this.props;
 
-        if (event.keyCode === '9' // tab
+        if (event.keyCode === 9 // tab
                 && !event.shiftKey
                 && !inputQueryHasSuggestions) {
 
