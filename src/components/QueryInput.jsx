@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { doesQueryInputHaveSuggestions } from '../reducers';
 import { focusWithoutScroll } from '../utils';
+import CloseButton from './buttons/CloseButton';
 
 class QueryInput extends Component {
 
@@ -59,17 +60,20 @@ class QueryInput extends Component {
     }
 
     render() {
-        const { query, active, onClickHandler, onBlurHandler } = this.props;
+        const { query, active, onClickHandler, onBlurHandler, onCloseHandler } = this.props;
         return (
-            <input type="text"
-                   ref="input"
-                   className={'query-input' + (active ? ' query-input--active' : '')}
-                   autoComplete="false"
-                   spellCheck="false"
-                   value={query}
-                   onChange={this.handleChange}
-                   onClick={onClickHandler}
-                   onBlur={onBlurHandler} />
+            <div className={'query-input' + (active ? ' query-input--active' : '')}>
+                <input type="text"
+                       ref="input"
+                       className="query-input__input"
+                       autoComplete="false"
+                       spellCheck="false"
+                       value={query}
+                       onChange={this.handleChange}
+                       onClick={onClickHandler}
+                       onBlur={onBlurHandler} />
+                <CloseButton onClickHandler={onCloseHandler} />
+            </div>
         );
     }
 }
@@ -81,7 +85,8 @@ QueryInput.propTypes = {
     onChangeHandler: PropTypes.func.isRequired,
     onClickHandler: PropTypes.func,
     onBlurHandler: PropTypes.func,
-    onCommitHandler: PropTypes.func
+    onCommitHandler: PropTypes.func,
+    onCloseHandler: PropTypes.func
 };
 
 const mapStateToProps = (state) => ({

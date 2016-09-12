@@ -10,17 +10,3 @@
 .board-item--loading {
     opacity: 0.7;
 }
-
-.board-item .close-button {
-    width: 40px;
-    height: 40px;
-    fill: #cacaca;
-    cursor: pointer;
-    position: absolute;
-    right: 30px;
-    top: 20px;
-}
-
-.board-item .close-button:hover {
-    fill: #aba9a9;
-}

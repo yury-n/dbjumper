@@ -3,7 +3,6 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import QueryInput from './QueryInput';
-import CloseButton from './buttons/CloseButton';
 import ResultsTable from './ResultsTable';
 import {
     removeBoardItem,
@@ -38,10 +37,9 @@ class BoardItem extends Component {
                             }
                             onClickHandler={() => {if (!isQueryActive) focusQueryInput(id)}}
                             onCommitHandler={(query) => commitQueryInput(id, query)}
+                            onCloseHandler={() => removeBoardItem(id)}
                             active={isQueryActive}
                             query={query} />
-
-                <CloseButton onClickHandler={() => removeBoardItem(id)} />
 
                 <ResultsTable rows={metaResults} />
 

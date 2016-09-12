@@ -1,5 +1,9 @@
 .query-input {
     width: 100%;
+    position: relative;
+}
+.query-input__input {
+    width: 100%;
     border: 1px #e7e6e4 solid;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 22px;
@@ -12,6 +16,6 @@
     background: rgba(255,255,255,0.8);
 }
 
-.query-input--active {
+.query-input--active .query-input__input {
     background: white;
 }

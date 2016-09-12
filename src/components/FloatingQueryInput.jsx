@@ -2,7 +2,6 @@ import 'styles/floatingQueryInput.css';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import QueryInput from './QueryInput';
-import CloseButton from './buttons/CloseButton';
 import { getFloatingQueryInput } from '../reducers';
 import { commitQueryInput, changeQueryInput, cancelConnectionCreation } from '../actions';
 
@@ -78,8 +77,8 @@ class FloatingQueryInput extends Component {
                             }
                             onClickHandler={() => {}}
                             onBlurHandler={cancelConnectionCreation}
-                            onCommitHandler={this.handleCommit} />
-                <CloseButton onClickHandler={cancelConnectionCreation} />
+                            onCommitHandler={this.handleCommit}
+                            onCloseHandler={cancelConnectionCreation} />
             </div>
         );
     }

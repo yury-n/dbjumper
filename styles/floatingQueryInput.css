@@ -6,17 +6,3 @@
 .floating-query-input .query-input {
     box-shadow: 0 5px 8px -8px #000;
 }
-
-.floating-query-input .close-button {
-    width: 40px;
-    height: 40px;
-    fill: #cacaca;
-    cursor: pointer;
-    position: absolute;
-    right: 7px;
-    top: 5px;
-}
-
-.floating-query-input .close-button:hover {
-    fill: #aba9a9;
-}

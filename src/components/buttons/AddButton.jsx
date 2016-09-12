@@ -1,3 +1,4 @@
+import 'styles/buttons/addButton.css';
 import React, { PropTypes } from 'react';
 import SVGButton from './SVGButton';
 
