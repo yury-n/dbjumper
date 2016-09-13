@@ -6,7 +6,8 @@ import QueryInput from './QueryInput';
 import ResultsTable from './ResultsTable';
 // selectors
 import { getBoard, getConnections } from '../reducers/';
-import { getBoardItem, getActiveQueryBoardItemId } from '../reducers/board';
+import { getBoardItems, getActiveQueryBoardItemId } from '../reducers/board';
+import { getBoardItem } from '../reducers/boardItems';
 import { getConnectedElemsForBoardItem } from '../reducers/connections';
 // actions
 import {
@@ -79,7 +80,7 @@ const mapStateToProps = (state, params) => {
     const boardItemId = params.id;
     const connections = getConnections(state);
     return {
-        ...getBoardItem(board, boardItemId),
+        ...getBoardItem(getBoardItems(board), boardItemId),
         isQueryActive: (activeQueryBoardItemId === boardItemId),
         connectedElems: getConnectedElemsForBoardItem(connections, boardItemId)
     };

@@ -1,8 +1,10 @@
 import { v4 } from 'node-uuid';
 import * as api from '../api';
 import { uniq } from 'lodash/array';
+// selectors
 import { getBoard, getConnections } from '../reducers';
-import { getBoardItem } from '../reducers/board';
+import { getBoardItems } from '../reducers/board';
+import { getBoardItem } from '../reducers/boardItems';
 import { getBoardItemQuery } from '../reducers/boardItem';
 import { getCurrentlyCreatedConnection, doesConnectionExist } from '../reducers/connections';
 
@@ -110,7 +112,7 @@ export const commitQueryInput = (boardItemId, query, withCtrlKeyPressed = false)
 
             // connect on the same board item
             const board = getBoard(getState());
-            const boardItem = getBoardItem(board, fromBoardItemId);
+            const boardItem = getBoardItem(getBoardItems(board), fromBoardItemId);
             const query = getBoardItemQuery(boardItem);
 
             let appendToQuery = `+${connectToTableName}`;
@@ -260,7 +262,7 @@ export const fetchTableData = (boardItemId) => (dispatch, getState) => {
         boardItemId
     });
     const board = getBoard(getState());
-    const boardItem = getBoardItem(board, boardItemId);
+    const boardItem = getBoardItem(getBoardItems(board), boardItemId);
     const query = getBoardItemQuery(boardItem);
 
     return api.fetchTableData(query).then(
@@ -280,7 +282,7 @@ export const fetchTableMeta = (boardItemId) => (dispatch, getState) => {
         boardItemId
     });
     const board = getBoard(getState());
-    const boardItem = getBoardItem(board, boardItemId);
+    const boardItem = getBoardItem(getBoardItems(board), boardItemId);
     const query = getBoardItemQuery(boardItem);
     const table = query.replace('#', '');
 

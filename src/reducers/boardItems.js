@@ -47,3 +47,5 @@ const boardItems = (state = [], action) => {
 };
 
 export default boardItems;
+
+export const getBoardItem = (state, id) => state.find(item => item.id === id);

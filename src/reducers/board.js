@@ -62,6 +62,5 @@ const board = (state = {}, action) => {
 export default board;
 
 export const getBoardItems = (state) => state.boardItems;
-export const getBoardItem = (state, id) => state.boardItems.find(item => item.id === id);
 export const getActiveQueryBoardItemId = (state) => state.activeQueryBoardItemId;
 export const isAddButtonVisible = (state) => state.addButtonIsVisible;
