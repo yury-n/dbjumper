@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "babel-node server.js",
-    "test": "",
+    "test": "mocha ./src/test/reducers/*.js --compilers js:babel-register --recursive",
     "eslint": "eslint ./src; exit 0"
   },
   "repository": {
@@ -38,14 +38,19 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.14.0",
+    "chai": "^3.5.0",
     "css-loader": "^0.23.1",
+    "deep-freeze": "0.0.1",
     "eslint": "^3.4.0",
     "eslint-config-defaults": "^9.0.0",
     "eslint-plugin-import": "^1.14.0",
     "eslint-plugin-react": "^6.2.0",
     "express": "^4.14.0",
     "install": "^0.8.1",
+    "mocha": "^3.0.2",
     "npm": "^3.10.6",
+    "react-addons-test-utils": "^15.3.1",
     "serve-favicon": "^2.3.0",
     "style-loader": "^0.13.1",
     "webpack-dev-middleware": "^1.6.1"

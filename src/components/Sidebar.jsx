@@ -2,6 +2,7 @@ import 'styles/sidebar.css';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import TableList from './TableList';
+// actions
 import { selectTableFromSidebar } from '../actions';
 
 const Sidebar = ({ selectTableFromSidebar }) => (

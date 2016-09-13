@@ -38,11 +38,13 @@ const boardItem = (state = {}, action) => {
             return {
                 ...state,
                 dataResults: [],
+                metaResults: [],
                 loading: true
             };
         case TABLE_DATA_FETCH:
             return {
                 ...state,
+                dataResults: [],
                 metaResults: [],
                 loading: true
             };

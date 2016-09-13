@@ -2,8 +2,14 @@ import 'styles/floatingQueryInput.css';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import QueryInput from './QueryInput';
+// selectors
 import { getFloatingQueryInput } from '../reducers';
-import { commitQueryInput, changeQueryInput, cancelConnectionCreation } from '../actions';
+// actions
+import {
+    commitQueryInput,
+    changeQueryInput,
+    cancelConnectionCreation
+} from '../actions';
 
 class FloatingQueryInput extends Component {
 

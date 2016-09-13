@@ -4,23 +4,25 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import QueryInput from './QueryInput';
 import ResultsTable from './ResultsTable';
-import {
-    removeBoardItem,
-    changeQueryInput, focusQueryInput, commitQueryInput,
-    createConnectionFrom
-} from '../actions';
+// selectors
 import { getBoard, getConnections } from '../reducers/';
 import { getBoardItem, getActiveQueryBoardItemId } from '../reducers/board';
 import { getConnectedElemsForBoardItem } from '../reducers/connections';
+// actions
+import {
+    removeBoardItem,
+    changeQueryInput,
+    focusQueryInput,
+    commitQueryInput,
+    createConnectionFrom
+} from '../actions';
 
 class BoardItem extends Component {
 
     render() {
         const {
             id, query, isQueryActive, loading, dataResults, metaResults, connectedElems,
-            removeBoardItem,
-            changeQueryInput, focusQueryInput, commitQueryInput,
-            createConnectionFrom
+            removeBoardItem, changeQueryInput, focusQueryInput, commitQueryInput, createConnectionFrom
         } = this.props;
 
 
@@ -87,7 +89,9 @@ export default connect(
     mapStateToProps,
     {
         removeBoardItem,
-        changeQueryInput, focusQueryInput, commitQueryInput,
+        changeQueryInput,
+        focusQueryInput,
+        commitQueryInput,
         createConnectionFrom
     }
 )(BoardItem);

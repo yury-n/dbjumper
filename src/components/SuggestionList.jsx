@@ -2,8 +2,14 @@ import 'styles/suggestionList.css';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
+// selectors
 import { getSuggestionList } from '../reducers/';
-import { changeSelectedSuggestion, hideSuggestions, useSuggestion } from '../actions';
+// actions
+import {
+    changeSelectedSuggestion,
+    hideSuggestions,
+    useSuggestion
+} from '../actions';
 
 class SuggestionList extends Component {
 
@@ -82,7 +88,7 @@ class SuggestionList extends Component {
                 {suggestionItems.map((suggestion, index) => (
                     <li key={index}
                         className={classnames({
-                            "active": index === selectedIndex,
+                            'active': index === selectedIndex,
                             'with-separator': index === separatorIndex
                         })}
                         onMouseOver={() => {changeSelectedSuggestion(index)}}

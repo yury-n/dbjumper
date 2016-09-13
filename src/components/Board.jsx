@@ -4,10 +4,12 @@ import BoardItem from './BoardItem';
 import AddButton from './buttons/AddButton';
 import SuggestionList from './SuggestionList';
 import FloatingQueryInput from './FloatingQueryInput';
-import { addBoardItem } from '../actions';
 import { connect } from 'react-redux';
+// selectors
 import { getBoard, doesQueryInputHaveSuggestions } from '../reducers/';
 import { getBoardItems, isAddButtonVisible } from '../reducers/board';
+// actions
+import { addBoardItem } from '../actions';
 
 class Board extends Component{
 
@@ -59,4 +61,9 @@ const mapStateToProps = (state) => ({
     inputQueryHasSuggestions: doesQueryInputHaveSuggestions(state)
 });
 
-export default connect(mapStateToProps, {addBoardItem})(Board);
+export default connect(
+    mapStateToProps,
+    {
+        addBoardItem
+    }
+)(Board);

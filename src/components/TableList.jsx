@@ -1,6 +1,7 @@
 import 'styles/tableList.css';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+// selectors
 import { getTableList } from '../reducers/';
 
 const TableList = ({ tables, onTableSelect }) => (

@@ -1,9 +1,10 @@
 import 'styles/queryInput.css';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { doesQueryInputHaveSuggestions } from '../reducers';
 import { focusWithoutScroll } from '../utils';
 import CloseButton from './buttons/CloseButton';
+// selectors
+import { doesQueryInputHaveSuggestions } from '../reducers';
 
 class QueryInput extends Component {
 
